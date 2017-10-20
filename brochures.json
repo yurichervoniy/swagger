@@ -1,0 +1,602 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Brochure of products for Internet Bank. Brochures API. Справочник для работы с брошюрами по продуктам.",
+    "description": "API для работы со справочником брошюр банковских продуктов",
+    "contact": {
+      "name": "BANK RBK API team",
+      "email": "apiteam@bankrbk.kz",
+      "url": "http://www.bankrbk.kz"
+    }
+  },
+  "host": "10.1.1.114",
+  "basePath": "/v1/brochureproducts",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "oauth": {
+      "type": "oauth2",
+      "flow": "application",
+      "tokenUrl": "https://10.1.1.114/oauth/token",
+      "scopes": {
+        "brochureProducts:read": "Чтение данных по брошюрам продуктам"
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth": [
+        "brochureProducts:read"
+      ]
+    }
+  ],
+  "paths": {
+    "/depositproducts": {
+      "get": {
+        "tags": [
+          "Получить полный список брошюр банковских продуктов"
+        ],
+        "summary": "Полный список брошюр депозитных продуктов, либо кодов указанных в параметрах",
+        "description": "Получение полного списка брошюр депозитных продуктов согласно [www.bankrbk.kz](https://www.bankrbk.kz/rus/private/deposit/)",
+        "operationId": "getDepositProductsBrochure",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "description": "Цифробуквенный код депозитного продукта.",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов депозитных продуктов",
+            "schema": {
+              "$ref": "#/definitions/DepositProducts"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/depositproducts/{code}": {
+      "get": {
+        "tags": [
+          "Поиск брошюры продукта по коду"
+        ],
+        "summary": "Получение депозитного продукта по идентификатору",
+        "description": "Выполняет поиск депозитного продукта по идентификатору",
+        "operationId": "getDepositProductsBrochureByCode",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "description": "Идентификатор кода депозитного продукта",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Код депозитного продукта",
+            "schema": {
+              "$ref": "#/definitions/DepositProduct"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/creditproducts": {
+      "get": {
+        "tags": [
+          "Получить полный список брошюр банковских продуктов"
+        ],
+        "summary": "Полный список брошюр кредитных продуктов, либо кодов указанных в параметрах",
+        "description": "Получение полного списка брошюр кредитных продуктов согласно [www.bankrbk.kz](https://www.bankrbk.kz/rus/private/credit/)",
+        "operationId": "getCreditProductsBrochure",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "description": "Цифробуквенный код кредитного продукта.",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов кредитных продуктов",
+            "schema": {
+              "$ref": "#/definitions/CreditProducts"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/creditproducts/{code}": {
+      "get": {
+        "tags": [
+          "Поиск брошюры продукта по коду"
+        ],
+        "summary": "Получение кредитного продукта по идентификатору",
+        "description": "Выполняет поиск кредитного продукта по идентификатору",
+        "operationId": "getCreditProductsBrochureByCode",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "description": "Идентификатор кода кредитного продукта",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Код кредитного продукта",
+            "schema": {
+              "$ref": "#/definitions/CreditProduct"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/safecellproducts": {
+      "get": {
+        "tags": [
+          "Получить полный список брошюр банковских продуктов"
+        ],
+        "summary": "Полный список брошюр сейфовых ячеек, либо кодов указанных в параметрах",
+        "description": "Получение полного списка брошюр сейфовых ячеек согласно [www.bankrbk.kz](https://www.bankrbk.kz/rus/private/manage_money/#safe/)",
+        "operationId": "getSafecellsBrochure",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "description": "Цифробуквенный код сейфовых ячеек.",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов сейфовых ячеек",
+            "schema": {
+              "$ref": "#/definitions/Items"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/safecellproducts/{code}": {
+      "get": {
+        "tags": [
+          "Поиск брошюры сейфовой ячейки по коду"
+        ],
+        "summary": "Получение брошюры сейфовой ячейки по идентификатору",
+        "description": "Выполняет поиск продукта по идентификатору",
+        "operationId": "getSafecellsBrochureByCode",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "description": "Идентификатор кода брошюры сейфовой ячейки",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Код кредитного продукта",
+            "schema": {
+              "$ref": "#/definitions/Item"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DepositDescription": {
+      "type": "object",
+      "properties": {
+        "locale": {
+          "type": "string",
+          "description": "Буквенный код продукта депозита."
+        },
+        "name": {
+          "type": "string",
+          "description": "Отображаемое имя продукта депозита"
+        },
+        "description": {
+          "type": "string",
+          "description": "Описание продукта депозита"
+        }
+      }
+    },
+    "DepositProduct": {
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "description": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/DepositDescription"
+          }
+        }
+      }
+    },
+    "DepositProducts": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/DepositProduct"
+      }
+    },
+    "CreditDescription": {
+      "type": "object",
+      "properties": {
+        "locale": {
+          "type": "string",
+          "description": "Буквенный код продукта кредита."
+        },
+        "name": {
+          "type": "string",
+          "description": "Отображаемое имя продукта кредита"
+        },
+        "description": {
+          "type": "string",
+          "description": "Описание продукта кредита"
+        }
+      }
+    },
+    "CreditProduct": {
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "description": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/CreditDescription"
+          }
+        }
+      }
+    },
+    "CreditProducts": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/CreditProduct"
+      }
+    },
+    "Name": {
+      "type": "object",
+      "properties": {
+        "locale": {
+          "type": "string",
+          "description": "Языковая локаль"
+        },
+        "name": {
+          "type": "string",
+          "description": "Отображаемое имя продукта кредита"
+        }
+      }
+    },
+    "Names": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/Name"
+      }
+    },
+    "Size": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "Описание размера сейфовой ячейки"
+        },
+        "unit": {
+          "type": "string",
+          "description": "В чем измеряется размер"
+        }
+      }
+    },
+    "Sizes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/Size"
+      }
+    },
+    "Period": {
+      "type": "object",
+      "properties": {
+        "timeunit": {
+          "type": "string",
+          "description": "Мера времени (день/месяц/год)"
+        },
+        "value": {
+          "type": "string",
+          "description": "Количество меры времени"
+        },
+        "name": {
+          "type": "string",
+          "description": "Отображаемое название меры времени"
+        },
+        "cost": {
+          "type": "string",
+          "description": "Сумма аренды"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Валюта суммы аренды"
+        }
+      }
+    },
+    "Periods": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/Period"
+      }
+    },
+    "Location": {
+      "type": "object",
+      "properties": {
+        "location": {
+          "type": "string",
+          "description": "Название города в которой можно арендовать сейфовую ячейку"
+        }
+      }
+    },
+    "Locations": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/Location"
+      }
+    },
+    "Properties": {
+      "type": "object",
+      "properties": {
+        "location": {
+          "$ref": "#/definitions/Locations"
+        },
+        "size": {
+          "$ref": "#/definitions/Sizes"
+        },
+        "period": {
+          "$ref": "#/definitions/Periods"
+        }
+      }
+    },
+    "Item": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Код сейфовой ячейки"
+        },
+        "isVip": {
+          "type": "boolean",
+          "description": "Признак для обслуживания VIP клиентов"
+        },
+        "itemproperties": {
+          "$ref": "#/definitions/Properties"
+        },
+        "names": {
+          "$ref": "#/definitions/Names"
+        }
+      }
+    },
+    "Items": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/Item"
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "description": "Код ошибки",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string",
+          "description": "Тип ошибки. validation - ошибка бизнес логики. exception - техническая ошибка",
+          "enum": [
+            "validation",
+            "exception"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "description": "Текст ошибки",
+          "minLength": 0
+        },
+        "details": {
+          "type": "string",
+          "description": "Детали ошибки. Опционально",
+          "minLength": 0
+        }
+      },
+      "required": [
+        "code",
+        "type",
+        "message"
+      ]
+    },
+    "Errors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    }
+  }
+}

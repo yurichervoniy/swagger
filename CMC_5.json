@@ -1,0 +1,229 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Internet banking. SMS API. Сервис отправки сообщений от СДБО.",
+    "description": "API для отправки сообщений интернет банкинга.",
+    "contact": {
+      "name": "BANK RBK API team",
+      "email": "apiteam@bankrbk.kz",
+      "url": "http://www.bankrbk.kz"
+    }
+  },
+  "host": "10.1.1.114",
+  "basePath": "/v1/dbopriv/smssend",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "oauth": {
+      "type": "oauth2",
+      "flow": "application",
+      "tokenUrl": "https://10.1.1.114/oauth/token",
+      "scopes": {
+        "dboprivSmsSend:write": "Отослать СМС из СДБО."
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth": [
+        "dboprivSmsSend:write"
+      ]
+    }
+  ],
+  "paths": {
+    "/sms": {
+      "post": {
+        "tags": [
+          "Отправка СМС из СДБО"
+        ],
+        "summary": "Отправить сообщение из интернет банкинга клиенту",
+        "description": "Отправление СМС сообщения.",
+        "operationId": "smsSend",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Отправить СМС сообщение",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SmsRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SmsResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth": [
+              "dboprivSmsSend:write"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "SmsResponse": {
+      "type": "object",
+      "required": [
+        "contact",
+        "message",
+        "correlationId",
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Уникальный идентификатор смс генерируемый при ответе на стороне получателя Например: 554132 или f13ef6d1-2d2b-4342-9ea3-31547d68133d",
+          "maxLength": 50
+        },
+        "correlationId": {
+          "type": "string",
+          "description": "Идентификатор смс генерируемый на стороне отправителя Например: 74531 или f13ef6d1-2d2b-4342-9ea3-31547d68133d",
+          "maxLength": 50
+        },
+        "clientno": {
+          "type": "string",
+          "description": "Идентификационный номер клиента"
+        },
+        "contact": {
+          "type": "number",
+          "pattern": "^[0-9]{11,12}",
+          "minLength": 10,
+          "maxLength": 12,
+          "description": "Телефонный номер на который необходимо доставить СМС. Например: 77051234567"
+        },
+        "message": {
+          "type": "string",
+          "description": "Текст СМС сообщения для передачи. Например: Ваш код авторизации XXXXX"
+        }
+      }
+    },
+    "SmsRequest": {
+      "type": "object",
+      "required": [
+        "contact",
+        "message",
+        "correlationId"
+      ],
+      "properties": {
+        "correlationId": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "Идентификатор смс генерируемый на стороне отправителя Например: 74531 или f13ef6d1-2d2b-4342-9ea3-31547d68133d"
+        },
+        "contact": {
+          "type": "number",
+          "pattern": "^[0-9]{11,12}",
+          "minLength": 10,
+          "maxLength": 12,
+          "description": "Телефонный номер на который необходимо доставить СМС. Например: 77051234567"
+        },
+        "message": {
+          "type": "string",
+          "description": "Текст СМС сообщения для передачи. Например: Ваш код авторизации XXXXX"
+        },
+        "clientno": {
+          "type": "string",
+          "description": "Идентификационный номер клиента"
+        }
+      }
+    },
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "description": "Код ошибки",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string",
+          "description": "Тип ошибки. validation - ошибка бизнес логики. exception - техническая ошибка",
+          "enum": [
+            "validation",
+            "exception"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "description": "Текст ошибки",
+          "minLength": 0
+        },
+        "details": {
+          "type": "string",
+          "description": "Детали ошибки. Опционально",
+          "minLength": 0
+        }
+      },
+      "required": [
+        "code",
+        "type",
+        "message"
+      ]
+    },
+    "Errors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    }
+  }
+}

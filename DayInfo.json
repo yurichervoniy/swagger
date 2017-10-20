@@ -1,0 +1,149 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Day Info API. Сервис работы с опер. днями.",
+        "description": "API для работы с опер. днями банка",
+        "contact": {
+            "name": "BANK RBK API team",
+            "email": "apiteam@bankrbk.kz",
+            "url": "http://www.bankrbk.kz"
+        }
+    },
+    "host": "10.1.1.114",
+    "basePath": "/v1/daysinfo",
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/getOperDate": {
+            "get": {
+                "tags": [
+                    "Определение опер. дня"
+                ],
+                "summary": "Получение информации об опер. дне",
+                "description": "Получение информации и переданном дне",
+                "operationId": "getOperationDate",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "operDate",
+                        "in": "query",
+                        "description": "Передаваемая дата на проверку",
+                        "required": true,
+                        "type": "string",
+                        "minLength": 10,
+                        "maxLength": 10,
+                        "format": "date"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Возвращает объект DayInfo",
+                        "schema": {
+                            "$ref": "#/definitions/DayInfo"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "DayInfo": {
+            "type": "object",
+            "properties": {
+                "requestedDate": {
+                    "type": "string",
+                    "description": "Запрошенная дата",
+                    "minLength": 10,
+                    "maxLength": 10,
+                    "format": "date"
+                },
+                "isBusiness": {
+                    "type": "boolean",
+                    "description": "Признак рабочего дня банка для запрошенной даты"
+                },
+                "nextWorkDay": {
+                    "type": "string",
+                    "description": "Следующая раб. дата банка, после запрошенной",
+                    "minLength": 10,
+                    "maxLength": 10,
+                    "format": "date"
+                },
+                "currentWorkDay": {
+                    "type": "string",
+                    "description": "Текущий раб. дата банка",
+                    "minLength": 10,
+                    "maxLength": 10,
+                    "format": "date"
+                }
+            },
+            "required": [
+                "requestedDate",
+                "isBusiness",
+                "nextWorkDay",
+                "currentWorkDay"
+            ]
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "Код ошибки",
+                    "format": "int32"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Тип ошибки. validation - ошибка бизнес логики. exception - техническая ошибка",
+                    "enum": [
+                        "validation",
+                        "exception"
+                    ]
+                },
+                "message": {
+                    "type": "string",
+                    "description": "Текст ошибки",
+                    "minLength": 0
+                },
+                "details": {
+                    "type": "string",
+                    "description": "Детали ошибки. Опционально",
+                    "minLength": 0
+                }
+            },
+            "required": [
+                "code",
+                "type",
+                "message"
+            ]
+        },
+        "Errors": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/definitions/Error"
+            }
+        }
+    }
+}

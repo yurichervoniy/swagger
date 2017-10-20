@@ -1,0 +1,360 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "ATMs API. Сервис банкоматов.",
+        "description": "API для работы с банкоматами",
+        "contact": {
+            "name": "BANK RBK API team",
+            "email": "apiteam@bankrbk.kz",
+            "url": "http://www.bankrbk.kz"
+        }
+    },
+    "host": "10.1.1.114",
+    "basePath": "/v1/terminals",
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/atms": {
+            "get": {
+                "tags": [
+                    "Получение списка atms"
+                ],
+                "summary": "Получение списка банкоматов",
+                "description": "Полный список банкоматов",
+                "operationId": "getATMsList",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "Поиск ATM по его идентификатору, уточняющий параметр фильтрации",
+                        "required": false,
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 8
+                    },
+                    {
+                        "name": "branchId",
+                        "in": "query",
+                        "description": "Поиск ATM по идентификатору филиала, уточняющий параметр фильтрации",
+                        "required": false,
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 4,
+                        "pattern": "[0-9]"
+                    },
+                    {
+                        "name": "scopes",
+                        "in": "query",
+                        "description": "Поиск по услуге, уточняющий параметр",
+                        "required": false,
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "cashin",
+                                "cashout",
+                                "alltime",
+                                "payments"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Возвращает массив объектов Atm",
+                        "schema": {
+                            "$ref": "#/definitions/Atms"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/atms/{id}": {
+            "get": {
+                "tags": [
+                    "Получение ATM по его id"
+                ],
+                "summary": "Получение ATM",
+                "description": "Получение ATM по его уникальноме идентификатору",
+                "operationId": "getATM",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Идентификатор ATM",
+                        "required": true,
+                        "type": "string",
+                        "minLength": 8,
+                        "maxLength": 8
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Возвращает объект Atm",
+                        "schema": {
+                            "$ref": "#/definitions/Atm"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/branches": {
+            "get": {
+                "tags": [
+                    "Получение филиалов"
+                ],
+                "summary": "Получение списка филиалов",
+                "description": "Получение списка филиалов",
+                "operationId": "getBranches",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Возвращает масcив объектов Branch",
+                        "schema": {
+                            "$ref": "#/definitions/Branches"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Atm": {
+            "type": "object",
+            "required": [
+                "id",
+                "branchId",
+                "location",
+                "lat",
+                "long",
+                "state",
+                "address",
+                "scopes",
+                "schedule"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Идентификатор ATM",
+                    "minLength": 8,
+                    "maxLength": 8,
+                    "pattern": "[A-Z0-9]"
+                },
+                "branchId": {
+                    "type": "string",
+                    "description": "Идентификатор филиала",
+                    "minLength": 4,
+                    "maxLength": 4,
+                    "pattern": "[0-9]"
+                },
+                "location": {
+                    "type": "string",
+                    "description": "Месторасположение ATM (Здание, ТД и т.д.)",
+                    "minLength": 1
+                },
+                "lat": {
+                    "type": "number",
+                    "description": "Координаты, широта",
+                    "format": "double"
+                },
+                "long": {
+                    "type": "number",
+                    "description": "Координаты, долгота",
+                    "format": "double"
+                },
+                "state": {
+                    "type": "string",
+                    "description": "Текущее состояние",
+                    "enum": [
+                        "on",
+                        "off"
+                    ]
+                },
+                "address": {
+                    "type": "string",
+                    "description": "Адрес",
+                    "minLength": 1
+                },
+                "scopes": {
+                    "$ref": "#/definitions/Scopes"
+                },
+                "schedule": {
+                    "type": "string",
+                    "description": "Режим работы",
+                    "minLength": 1
+                }
+            }
+        },
+        "Atms": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/definitions/Atm"
+            }
+        },
+        "Scopes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "string",
+                "enum": [
+                    "cashin",
+                    "cashout",
+                    "payments",
+                    "alltime"
+                ]
+            }
+        },
+        "Branch": {
+            "type": "object",
+            "required": [
+                "id",
+                "name",
+                "links"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Идентификатор филиала",
+                    "minLength": 4,
+                    "maxLength": 4,
+                    "pattern": "[0-9]"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Наименование филиала",
+                    "minLength": 1
+                },
+                "links": {
+                    "$ref": "#/definitions/Links"
+                }
+            }
+        },
+        "Links": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "rel",
+                    "href"
+                ],
+                "properties": {
+                    "rel": {
+                        "type": "string",
+                        "description": "Связь",
+                        "enum": [
+                            "atms",
+                            "terminals",
+                            "pos"
+                        ]
+                    },
+                    "href": {
+                        "type": "string",
+                        "description": "URL на сервис",
+                        "format": "url"
+                    }
+                }
+            }
+        },
+        "Branches": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/definitions/Branch"
+            }
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "Код ошибки",
+                    "format": "int32"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Тип ошибки. validation - ошибка бизнес логики. exception - техническая ошибка",
+                    "enum": [
+                        "validation",
+                        "exception"
+                    ]
+                },
+                "message": {
+                    "type": "string",
+                    "description": "Текст ошибки",
+                    "minLength": 0
+                },
+                "details": {
+                    "type": "string",
+                    "description": "Детали ошибки. Опционально",
+                    "minLength": 0
+                }
+            },
+            "required": [
+                "code",
+                "type",
+                "message"
+            ]
+        },
+        "Errors": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/definitions/Error"
+            }
+        }
+    }
+}

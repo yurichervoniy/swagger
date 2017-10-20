@@ -1,0 +1,301 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Articles API. Сервис новостей.",
+    "description": "API для получения новостей Банка",
+    "contact": {
+      "name": "BANK RBK API team",
+      "email": "apiteam@bankrbk.kz",
+      "url": "http://www.bankrbk.kz"
+    }
+  },
+  "host": "10.1.1.114",
+  "basePath": "/v1/articles",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Новости"
+        ],
+        "summary": "Получить список новостей",
+        "operationId": "sdboflArticleUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "type": "integer",
+            "format": "int32",
+            "name": "page",
+            "required": false,
+            "description": "Номер страницы"
+          },
+          {
+            "in": "query",
+            "type": "integer",
+            "format": "int32",
+            "name": "size",
+            "required": false,
+            "description": "Количество записей"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Articles"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected Error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/{id}": {
+      "get": {
+        "tags": [
+          "Поиск по articleId"
+        ],
+        "summary": "Поиск по articleId",
+        "operationId": "findOneArticleUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Article"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected Error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Article": {
+      "type": "object",
+      "properties": {
+        "active": {
+          "type": "boolean",
+          "example": false,
+          "description": "Параметр показывает статус записи, активна(показывать на сайте) или нет"
+        },
+        "category": {
+          "type": "string",
+          "description": "Категория новости"
+        },
+        "id": {
+          "type": "string"
+        },
+        "imageUrl": {
+          "type": "string",
+          "format": "url",
+          "description": "Ссылка на основное изображение"
+        },
+        "linkFoItself": {
+          "type": "string"
+        },
+        "thumbUrl": {
+          "type": "string",
+          "format": "url",
+          "description": "Ссылка на иконку для списков"
+        },
+        "translations": {
+          "type": "array",
+          "description": "Коллекция переводов возможные языки kz ru en",
+          "items": {
+            "$ref": "#/definitions/Translations"
+          }
+        }
+      }
+    },
+    "Articles": {
+      "type": "object",
+      "properties": {
+        "articles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Article"
+          }
+        },
+        "page": {
+          "$ref": "#/definitions/Page"
+        },
+        "links": {
+          "$ref": "#/definitions/Links"
+        }
+      }
+    },
+    "Page": {
+      "type": "object",
+      "properties": {
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Количество записей"
+        },
+        "totalElements": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Количество элементов"
+        },
+        "totalPages": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Количество страниц"
+        },
+        "number": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Номер страницы"
+        }
+      }
+    },
+    "Links": {
+      "type": "object",
+      "properties": {
+        "first": {
+          "type": "string",
+          "description": "Ссылка на первую страницу"
+        },
+        "last": {
+          "type": "string",
+          "description": "Ссылка на последнию страницу"
+        },
+        "next": {
+          "type": "string",
+          "description": "Следующая страница"
+        },
+        "prev": {
+          "type": "string",
+          "description": "Предыдущая страница"
+        },
+        "self": {
+          "type": "string",
+          "description": "Ссылка на текущую страницу"
+        }
+      }
+    },
+    "Translations": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "type": "string",
+          "description": "Основной текст"
+        },
+        "description": {
+          "type": "string",
+          "description": "Краткий текст/Описание"
+        },
+        "language": {
+          "type": "string",
+          "description": "Язык перевода, доступные варианты kz ru en",
+          "enum": [
+            "ru",
+            "kz",
+            "en"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "description": "Название/Заголовок"
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "description": "Код ошибки",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string",
+          "description": "Тип ошибки. validation - ошибка бизнес логики. exception - техническая ошибка",
+          "enum": [
+            "validation",
+            "exception"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "description": "Текст ошибки",
+          "minLength": 0
+        },
+        "details": {
+          "type": "string",
+          "description": "Детали ошибки. Опционально",
+          "minLength": 0
+        }
+      },
+      "required": [
+        "code",
+        "type",
+        "message"
+      ]
+    },
+    "Errors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    }
+  }
+}

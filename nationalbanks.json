@@ -1,0 +1,220 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "National Banks Api. Справочник Национальных банков РК",
+        "description": "API для работы со справочником Национальных банков РК",
+        "contact": {
+            "name": "BANK RBK API team",
+            "email": "apiteam@bankrbk.kz",
+            "url": "http://www.bankrbk.kz"
+        }
+    },
+    "host": "10.1.1.114",
+    "basePath": "/v1/commons",
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/nationalbanks": {
+            "get": {
+                "tags": [
+                    "Получение справочника НБ"
+                ],
+                "summary": "Получение справочника Национальных банков",
+                "description": "Полный справочник Национальных банков РК",
+                "operationId": "getNationalBanks",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Возвращает массив объектов nationalbank",
+                        "schema": {
+                            "$ref": "#/definitions/nationalbanks"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/nationalbanks/{bic}": {
+            "get": {
+                "tags": [
+                    "Получение НБ по БИК коду"
+                ],
+                "summary": "Получение Национального банка",
+                "description": "Получение Национального банка по его БИК коду  ISO 9362 BIC (https://en.wikipedia.org/wiki/ISO_9362)",
+                "operationId": "getNationalBankByBic",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "bic",
+                        "in": "path",
+                        "description": "БИК код Банка",
+                        "required": true,
+                        "type": "string",
+                        "minLength": 8,
+                        "maxLength": 8,
+                        "pattern": "[A-Z0-9]"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Возвращает объект nationalbank",
+                        "schema": {
+                            "$ref": "#/definitions/nationalbank"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/errors"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/nationalbanks/search": {
+            "get": {
+                "tags": [
+                    "Поиск НБ по вхождению БИК кода"
+                ],
+                "summary": "Поиск НБ",
+                "description": "Выполняет поиск НБ по БИК коду",
+                "operationId": "searchNationalBanks",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "filters",
+                        "in": "query",
+                        "description": "Поиск по вхождению БИК кода",
+                        "required": true,
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 8,
+                        "pattern": "[A-Z0-9]"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Возвращает массив объектов nationalbank",
+                        "schema": {
+                            "$ref": "#/definitions/nationalbanks"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/errors"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/errors"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "nationalbank": {
+            "type": "object",
+            "required": [
+                "bic",
+                "display_name"
+            ],
+            "properties": {
+                "bic": {
+                    "type": "string",
+                    "description": "БИК код Банка",
+                    "minLength": 8,
+                    "maxLength": 8,
+                    "pattern": "[A-Z0-9]"
+                },
+                "display_name": {
+                    "type": "string",
+                    "description": "Отображаемое имя",
+                    "minLength": 1
+                }
+            }
+        },
+        "nationalbanks": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+                "$ref": "#/definitions/nationalbank"
+            }
+        },
+        "error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "Код ошибки",
+                    "format": "int32"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Тип ошибки. validation - ошибка бизнес логики. exception - техническая ошибка",
+                    "enum": [
+                        "validation",
+                        "exception"
+                    ]
+                },
+                "message": {
+                    "type": "string",
+                    "description": "Текст ошибки",
+                    "minLength": 0
+                },
+                "details": {
+                    "type": "string",
+                    "description": "Детали ошибки. Опционально",
+                    "minLength": 0
+                }
+            },
+            "required": [
+                "code",
+                "type",
+                "message"
+            ]
+        },
+        "errors": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/definitions/error"
+            }
+        }
+    }
+}

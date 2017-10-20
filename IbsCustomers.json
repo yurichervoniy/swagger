@@ -1,0 +1,1148 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "IBSO Customers API. Сервис для работы с клиентами АБИС",
+    "description": "API для работы с клиентами АБИС IBSO",
+    "contact": {
+      "name": "BANK RBK API team",
+      "email": "apiteam@bankrbk.kz",
+      "url": "http://www.bankrbk.kz"
+    }
+  },
+  "host": "10.1.1.114",
+  "basePath": "/v1/ibsocustomers",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "oauth": {
+      "type": "oauth2",
+      "flow": "application",
+      "tokenUrl": "https://10.1.1.114/oauth/token",
+      "scopes": {
+        "ibsoСustomers:read": "Чтение данных по клиентам"
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth": [
+        "ibsoСustomers:read"
+      ]
+    }
+  ],
+  "paths": {
+    "/{id}": {
+      "get": {
+        "tags": [
+          "Поиск клиента по id"
+        ],
+        "summary": "Поиск клиента в IBSO",
+        "description": "Поиск клиента по уникальному номеру в IBSO",
+        "operationId": "getCustomerById()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ИД клиента",
+            "required": true,
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает объект клиента АБИС",
+            "schema": {
+              "$ref": "#/definitions/IbsCustomer"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/clientNo/{clientNo}": {
+      "get": {
+        "tags": [
+          "Поиск клиента по clientNo"
+        ],
+        "summary": "Поиск клиента по сквозному идентификатору",
+        "description": "Поиск клиента по сквозному идентификатору",
+        "operationId": "getCustomerByClientNo()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "clientNo",
+            "in": "path",
+            "description": "Идентификатор клиента (clientno)",
+            "required": true,
+            "type": "string",
+            "minLength": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает объект клиента АБИС",
+            "schema": {
+              "$ref": "#/definitions/IbsCustomer"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/taxnumber/{taxNo}": {
+      "get": {
+        "tags": [
+          "Поиск клиента по taxNo"
+        ],
+        "summary": "Поиск клиента в IBSO",
+        "description": "Поиск клиента по ИИН/БИН в IBSO",
+        "operationId": "getCustomerByTaxNo()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "taxNo",
+            "in": "path",
+            "description": "ИИН/БИН клиента",
+            "required": true,
+            "type": "string",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          {
+            "$ref": "#/parameters/CustomerTypeFilter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает объект клиента АБИС",
+            "schema": {
+              "$ref": "#/definitions/IbsCustomer"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/phoneNumber/{phoneNo}": {
+      "get": {
+        "tags": [
+          "Поиск клиента по phoneNo"
+        ],
+        "summary": "Поиск клиента в IBSO (Возвращает массив объектов IbsCustomer)",
+        "description": "Поиск клиента по номеру телефона",
+        "operationId": "getCustomerByPhoneNo()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "phoneNo",
+            "in": "path",
+            "description": "Номер телефона клиента",
+            "required": true,
+            "type": "string",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          {
+            "$ref": "#/parameters/CustomerTypeFilter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов клиента АБИС",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/IbsCustomer"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/accountNumber/{accNo}": {
+      "get": {
+        "tags": [
+          "Поиск клиента по accNo"
+        ],
+        "summary": "Поиск клиента в IBSO",
+        "description": "Поиск клиента по номеру счета",
+        "operationId": "getCustomerByAccNo()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "accNo",
+            "in": "path",
+            "description": "Номер счета (старые номера и IBAN)",
+            "required": true,
+            "type": "string",
+            "minLength": 14,
+            "maxLength": 20,
+            "pattern": "[A-Za-z0-9]{14,20}"
+          },
+          {
+            "$ref": "#/parameters/CustomerTypeFilter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает объект клиента АБИС",
+            "schema": {
+              "$ref": "#/definitions/IbsCustomer"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/{id}/docs": {
+      "get": {
+        "tags": [
+          "Получение документов"
+        ],
+        "summary": "Получение документов, удостоверяющих личность",
+        "description": "Получение документов, удостоверяющих личность по ИД IBSO",
+        "operationId": "getCustomerIdDocs()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ИД клиента",
+            "required": true,
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов Doc",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/Doc"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/{id}/contacts": {
+      "get": {
+        "tags": [
+          "Получение контактной информации"
+        ],
+        "summary": "Получение контактной информации",
+        "description": "Получение контактной информации по ИД клиента",
+        "operationId": "getCustomerContacts()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ИД клиента",
+            "required": true,
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов Contact",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/Contact"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/{id}/addresses": {
+      "get": {
+        "tags": [
+          "Получение адресной информации"
+        ],
+        "summary": "Получение адресной информации",
+        "description": "ПОлучение адресной информации по ИД IBSO",
+        "operationId": "getCustomerAddresses()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ИД клиента",
+            "required": true,
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов Address",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/Address"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/{id}/relations": {
+      "get": {
+        "tags": [
+          "Получение информации об особых отношениях с Банком"
+        ],
+        "summary": "Получение информации об особых отношениях клиента с Банком",
+        "description": "Получение информации об особых отношениях клиента с Банком по ИД IBSO",
+        "operationId": "getCustomerRelations()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ИД клиента",
+            "required": true,
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов Relation",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/Relation"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/{id}/members": {
+      "get": {
+        "tags": [
+          "Получение информации об уполномоченных представителях"
+        ],
+        "summary": "Получение информации об уполномоченных представителях организации",
+        "description": "Получение информации об уполномоченных представителях организации по ИД IBSO",
+        "operationId": "getCustomerMembers()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ИД клиента",
+            "required": true,
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов Member",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/Member"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "CustomerTypeFilter": {
+      "name": "type",
+      "in": "query",
+      "description": "Тип клиента",
+      "required": false,
+      "type": "string",
+      "minimum": 0,
+      "exclusiveMinimum": true,
+      "enum": [
+        "CL_PRIV",
+        "CL_CORP"
+      ]
+    }
+  },
+  "definitions": {
+    "IbsCustomer": {
+      "type": "object",
+      "description": "Объект клиент",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "ИД клиента",
+          "minLength": 1
+        },
+        "clientNo": {
+          "type": "string",
+          "description": "Сквозной идентификатор клиента",
+          "minLength": 1
+        },
+        "customerType": {
+          "type": "string",
+          "description": "Тип клиента",
+          "enum": [
+            "CL_PRIV",
+            "CL_CORP"
+          ]
+        },
+        "taxnumber": {
+          "type": "string",
+          "description": "ИИН/БИН клиента",
+          "minLength": 12,
+          "maxLength": 12
+        },
+        "isResident": {
+          "type": "boolean",
+          "description": "Признак резидента"
+        },
+        "isVip": {
+          "type": "boolean",
+          "description": "Признак VIP клиента"
+        },
+        "createdDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата создания карточки клиента"
+        },
+        "sectorOfEconomyCode": {
+          "type": "string",
+          "description": "Код сектора экономики",
+          "minLength": 1
+        },
+        "sectorOfEconomyName": {
+          "type": "string",
+          "description": "Наименование сектора экономики",
+          "minLength": 1
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Полное имя клиента",
+          "minLength": 1
+        },
+        "fullNameInternational": {
+          "type": "string",
+          "description": "Международное  имя клиента",
+          "minLength": 1
+        },
+        "shortName": {
+          "type": "string",
+          "description": "Короткое имя клиента",
+          "minLength": 1
+        },
+        "privInfo": {
+          "$ref": "#/definitions/Priv"
+        },
+        "corpInfo": {
+          "$ref": "#/definitions/Corp"
+        }
+      },
+      "required": [
+        "id",
+        "clientNo",
+        "customerType",
+        "taxnumber",
+        "isResident",
+        "isVip",
+        "createdDate",
+        "sectorOfEconomyCode",
+        "sectorOfEconomyName",
+        "fullName",
+        "fullNameInternational",
+        "shortName"
+      ]
+    },
+    "Priv": {
+      "type": "object",
+      "description": "Информация, относящаяся к физическому лицу",
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "description": "Имя клиента",
+          "minLength": 1
+        },
+        "middleName": {
+          "type": "string",
+          "description": "Отчество клиента",
+          "minLength": 1
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Фамилия клиента",
+          "minLength": 1
+        },
+        "birthDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата рождения"
+        },
+        "birthPlace": {
+          "type": "string",
+          "description": "Место рождения",
+          "minLength": 1
+        },
+        "sex": {
+          "type": "string",
+          "description": "Пол",
+          "enum": [
+            "male",
+            "female"
+          ]
+        }
+      },
+      "required": [
+        "lastName",
+        "birthDate",
+        "birthPlace",
+        "sex"
+      ]
+    },
+    "Corp": {
+      "type": "object",
+      "description": "Информация, относящая к юридическому лицу",
+      "required": [
+        "ownership",
+        "companyTypeCode",
+        "companyTypeName"
+      ],
+      "properties": {
+        "ownership": {
+          "type": "string",
+          "description": "Наименование вида собственности",
+          "minLength": 1
+        },
+        "companyTypeCode": {
+          "type": "string",
+          "description": "Код формы организации",
+          "minLength": 1
+        },
+        "companyTypeName": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Форма собственности"
+        },
+        "activityCode": {
+          "type": "string",
+          "description": "Код вида деятельности",
+          "minLength": 1
+        },
+        "activityName": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Наименование вида деятельности"
+        },
+        "okedCode": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Код общего классификатора экономической деятельности"
+        },
+        "okedName": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Значение ОКЭД"
+        },
+        "okpoCode": {
+          "type": "string",
+          "description": "Код общего классификатора предприятий и организаций",
+          "minLength": 1
+        },
+        "okpoName": {
+          "type": "string",
+          "description": "Значение ОКПО",
+          "minLength": 1
+        },
+        "businessclassCode": {
+          "type": "string",
+          "description": "Код категории бизнеса",
+          "minLength": 1
+        },
+        "businessclassName": {
+          "type": "string",
+          "description": "Наименование категории бизнеса",
+          "minLength": 1
+        }
+      }
+    },
+    "Doc": {
+      "type": "object",
+      "description": "Объект документа",
+      "properties": {
+        "docFullName": {
+          "type": "string",
+          "description": "Полное наименование документа",
+          "minLength": 1
+        },
+        "docShortName": {
+          "type": "string",
+          "description": "Короткое наименование документа",
+          "minLength": 1
+        },
+        "code": {
+          "type": "string",
+          "description": "Код документа в IBSO",
+          "minLength": 1,
+          "enum": [
+            "ARMY_DOC",
+            "KZ_UD_L",
+            "KZ_PASSP",
+            "KZ_VID_G",
+            "KZ_INPASSP",
+            "KZ_BURN",
+            "OTHER"
+          ]
+        },
+        "no": {
+          "type": "string",
+          "description": "Номер документа"
+        },
+        "issuedDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата выдачи документа"
+        },
+        "issuedBy": {
+          "type": "string",
+          "description": "Кем выдан документ",
+          "minLength": 1
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Срок действия документа"
+        },
+        "isPrimary": {
+          "type": "boolean",
+          "description": "Признак основного документа"
+        },
+        "series": {
+          "type": "string",
+          "description": "Серия документа",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "code",
+        "no",
+        "issuedDate",
+        "issuedBy",
+        "endDate",
+        "docFullName",
+        "docShortName"
+      ]
+    },
+    "Address": {
+      "type": "object",
+      "description": "Объект адреса",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Тип адреса",
+          "minLength": 1,
+          "enum": [
+            "BIRTHPLACE",
+            "OTHER",
+            "CORP",
+            "FACT",
+            "REAL_LIVE",
+            "REGISTRATION"
+          ]
+        },
+        "kato": {
+          "type": "string",
+          "description": "КАТО",
+          "minLength": 1
+        },
+        "countryCode": {
+          "type": "string",
+          "description": "Цифровой код страны",
+          "minLength": 1
+        },
+        "countryName": {
+          "type": "string",
+          "description": "Наименование страны",
+          "minLength": 1
+        },
+        "areaCode": {
+          "type": "string",
+          "description": "Код региона",
+          "minLength": 1
+        },
+        "areaName": {
+          "type": "string",
+          "description": "Наименование региона",
+          "minLength": 1
+        },
+        "locationCode": {
+          "type": "string",
+          "description": "Код населенного пункта",
+          "minLength": 1
+        },
+        "locationName": {
+          "type": "string",
+          "description": "Наименование населенного пункта",
+          "minLength": 1
+        },
+        "street": {
+          "type": "string",
+          "description": "Наименование улицы",
+          "minLength": 1
+        },
+        "buildNo": {
+          "type": "string",
+          "description": "Номер здания/строения",
+          "minLength": 1
+        },
+        "apartment": {
+          "type": "string",
+          "description": "Номер квартиры",
+          "minLength": 1
+        },
+        "postbox": {
+          "type": "string",
+          "description": "Почтовый индекс",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "type",
+        "kato",
+        "countryCode",
+        "countryName",
+        "areaCode",
+        "areaName",
+        "locationCode",
+        "locationName"
+      ]
+    },
+    "Contact": {
+      "type": "object",
+      "description": "Контактная информация",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Категория контакта",
+          "minLength": 1,
+          "enum": [
+            "FAX",
+            "MAIL",
+            "PHONE_HOME",
+            "PHONE_INT",
+            "PHONE_MOBILE",
+            "PHONE_WORK",
+            "TELEGRAPH",
+            "TELETYPE",
+            "TELEX",
+            "WEB"
+          ]
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Активный/Неактивный"
+        },
+        "value": {
+          "type": "string",
+          "description": "Значение контакта",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "category",
+        "value"
+      ]
+    },
+    "Relation": {
+      "type": "object",
+      "description": "Особые отношения с Банком",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Уникальный код отношений",
+          "minLength": 1
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата начала отношений"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата завершения отношений"
+        },
+        "name": {
+          "type": "string",
+          "description": "Наименование отношений",
+          "minLength": 1
+        },
+        "isMain": {
+          "type": "boolean",
+          "description": "Признак основного отношений"
+        }
+      },
+      "required": [
+        "code",
+        "name"
+      ]
+    },
+    "Member": {
+      "type": "object",
+      "description": "Уполномоченный представитель организации",
+      "properties": {
+        "isSign": {
+          "type": "boolean",
+          "description": "Право подписи"
+        },
+        "id": {
+          "type": "integer",
+          "description": "ИД клиента",
+          "minLength": 1
+        },
+        "clientNo": {
+          "type": "string",
+          "description": "Сквозной ИД клиента",
+          "minLength": 1
+        },
+        "taxnumber": {
+          "type": "string",
+          "description": "ИИН",
+          "minLength": 12,
+          "maxLength": 12
+        },
+        "name": {
+          "type": "string",
+          "description": "Полное имя клиента",
+          "minLength": 1
+        },
+        "positionCode": {
+          "type": "string",
+          "description": "Код должности",
+          "minLength": 1
+        },
+        "positionName": {
+          "type": "string",
+          "description": "Наименование должности",
+          "minLength": 1
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "minLength": 1,
+          "description": "Дата начала работы"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "minLength": 1,
+          "description": "Дата завершения работы"
+        }
+      },
+      "required": [
+        "isSign",
+        "name",
+        "positionCode",
+        "positionName"
+      ]
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "description": "Код ошибки",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string",
+          "description": "Тип ошибки. validation - ошибка бизнес логики. exception - техническая ошибка",
+          "enum": [
+            "validation",
+            "exception"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "description": "Текст ошибки",
+          "minLength": 0
+        },
+        "details": {
+          "type": "string",
+          "description": "Детали ошибки. Опционально",
+          "minLength": 0
+        }
+      },
+      "required": [
+        "code",
+        "type",
+        "message"
+      ]
+    },
+    "Errors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    }
+  }
+}

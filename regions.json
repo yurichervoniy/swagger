@@ -1,0 +1,344 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Regions API. Сервис справочника регионов",
+        "description": "API для работы со справочником регионов",
+        "contact": {
+            "name": "BANK RBK API team",
+            "email": "apiteam@bankrbk.kz",
+            "url": "http://www.bankrbk.kz"
+        }
+    },
+    "host": "10.1.1.114",
+    "basePath": "/v1/commons",
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/regions": {
+            "get": {
+                "tags": [
+                    "Получение списка регионов"
+                ],
+                "summary": "Получение списка регионов",
+                "description": "Получение списка регионов",
+                "operationId": "getRegionsList",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "parentKato",
+                        "in": "query",
+                        "description": "Код (КАТО) вышестоящего региона",
+                        "required": false,
+                        "type": "string",
+                        "minLength": 2,
+                        "pattern": "[0-9]"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Возвращает массив объектов Region",
+                        "schema": {
+                            "$ref": "#/definitions/Regions"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/region/{kato}": {
+            "get": {
+                "tags": [
+                    "Получение региона"
+                ],
+                "summary": "Получение региона",
+                "description": "Получение региона по коду (КАТО)",
+                "operationId": "getRegionByKato",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "kato",
+                        "in": "path",
+                        "description": "Код региона (КАТО)",
+                        "required": true,
+                        "type": "string",
+                        "pattern": "[0-9]",
+                        "minLength": 2
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Возвращает объект Region",
+                        "schema": {
+                            "$ref": "#/definitions/Region"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Regions": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/definitions/Region"
+            }
+        },
+        "Region": {
+            "type": "object",
+            "required": [
+                "kato",
+                "name",
+                "parent",
+                "center"
+            ],
+            "properties": {
+                "kato": {
+                    "type": "string",
+                    "description": "Код (КАТО) региона",
+                    "minLength": 2,
+                    "pattern": "[0-9]"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Наименование региона",
+                    "minLength": 1
+                },
+                "parent": {
+                    "$ref": "#/definitions/Parent"
+                },
+                "center": {
+                    "$ref": "#/definitions/Center"
+                }
+            }
+        },
+        "Parent": {
+            "type": "object",
+            "required": [
+                "kato",
+                "name"
+            ],
+            "properties": {
+                "kato": {
+                    "type": "string",
+                    "description": "Код (КАТО) вышестоящего региона",
+                    "minLength": 2,
+                    "pattern": "[0-9]"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Наименование вышестоящего региона",
+                    "minLength": 1
+                }
+            }
+        },
+        "Center": {
+            "type": "object",
+            "description": "Административный центр",
+            "required": [
+                "code",
+                "name",
+                "type",
+                "kato",
+                "country",
+                "district"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "Код административного центра",
+                    "minLength": 1
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Наименование административного центра",
+                    "minLength": 1
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Тип административного центра",
+                    "minLength": 1
+                },
+                "kato": {
+                    "type": "string",
+                    "description": "КАТО",
+                    "pattern": "[0-9]",
+                    "minLength": 2
+                },
+                "country": {
+                    "$ref": "#/definitions/Country"
+                },
+                "district": {
+                    "$ref": "#/definitions/District"
+                }
+            }
+        },
+        "Country": {
+            "type": "object",
+            "description": "Страна",
+            "required": [
+                "code",
+                "name",
+                "region"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "Цифровой код страны по ISO 3166-1",
+                    "pattern": "[0-9]",
+                    "minLength": 2
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Наименование страны",
+                    "minLength": 2
+                },
+                "region": {
+                    "$ref": "#/definitions/RegionGNI"
+                }
+            }
+        },
+        "RegionGNI": {
+            "type": "object",
+            "description": "Регион по классификации ГНИ",
+            "required": [
+                "code",
+                "name",
+                "type",
+                "kato"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "Код области или города",
+                    "minLength": 1
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Наименование области или города",
+                    "minLength": 1
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Тип",
+                    "minLength": 1
+                },
+                "kato": {
+                    "type": "string",
+                    "description": "КАТО",
+                    "pattern": "[0-9]",
+                    "minLength": 2
+                }
+            }
+        },
+        "District": {
+            "type": "object",
+            "description": "Район области",
+            "required": [
+                "code",
+                "name",
+                "kato"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "Код района области",
+                    "pattern": "[0-9]",
+                    "minLength": 2
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Наименование района области",
+                    "minLength": 2
+                },
+                "kato": {
+                    "type": "string",
+                    "description": "КАТО",
+                    "pattern": "[0-9]",
+                    "minLength": 2
+                }
+            }
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "Код ошибки",
+                    "format": "int32"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Тип ошибки. validation - ошибка бизнес логики. exception - техническая ошибка",
+                    "enum": [
+                        "validation",
+                        "exception"
+                    ]
+                },
+                "message": {
+                    "type": "string",
+                    "description": "Текст ошибки",
+                    "minLength": 0
+                },
+                "details": {
+                    "type": "string",
+                    "description": "Детали ошибки. Опционально",
+                    "minLength": 0
+                }
+            },
+            "required": [
+                "code",
+                "type",
+                "message"
+            ]
+        },
+        "Errors": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/definitions/Error"
+            }
+        }
+    }
+}

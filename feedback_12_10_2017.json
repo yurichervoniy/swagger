@@ -1,0 +1,196 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Internet banking. Feedback API. Сервис отправки обратной связи СДБО.",
+    "description": "API для отправки обратной связи интернет банкинга.",
+    "contact": {
+      "name": "BANK RBK API team",
+      "email": "apiteam@bankrbk.kz",
+      "url": "http://www.bankrbk.kz"
+    }
+  },
+  "host": "10.1.1.114",
+  "basePath": "/v1/dbopriv/feedbacksend",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "oauth": {
+      "type": "oauth2",
+      "flow": "application",
+      "tokenUrl": "https://10.1.1.114/oauth/token",
+      "scopes": {
+        "dboprivFeedbackSend:write": "Отослать обратную связь из СДБО."
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth": [
+        "dboprivFeedbackSend:write"
+      ]
+    }
+  ],
+  "paths": {
+    "/feedback": {
+      "post": {
+        "tags": [
+          "Отправка обратной связи из СДБО"
+        ],
+        "summary": "Отправить обратную связь из интернет банкинга менеджеру",
+        "description": "Отправление обратной связи.",
+        "operationId": "feedbackSend",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Отправить обратную связь",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Request"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth": [
+              "dboprivFeedbackSend:write"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Request": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "Идентификатор запроса генерируемый на стороне отправителя Например: 74531 или f13ef6d1-2d2b-4342-9ea3-31547d68133d"
+        },
+        "message": {
+          "$ref": "#/definitions/Message"
+        }
+      }
+    },
+    "Message": {
+      "type": "object",
+      "properties": {
+        "clientno": {
+          "type": "string",
+          "description": "Идентификатор клиента"
+        },
+        "subject": {
+          "type": "string",
+          "description": "Основная тема сообщения"
+        },
+        "body": {
+          "type": "string",
+          "description": "Текст введенный клиентом в Base64"
+        }
+      }
+    },
+    "Response": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "description": "Код ошибки",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string",
+          "description": "Тип ошибки. validation - ошибка бизнес логики. exception - техническая ошибка",
+          "enum": [
+            "validation",
+            "exception"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "description": "Текст ошибки",
+          "minLength": 0
+        },
+        "details": {
+          "type": "string",
+          "description": "Детали ошибки. Опционально",
+          "minLength": 0
+        }
+      },
+      "required": [
+        "code",
+        "type",
+        "message"
+      ]
+    },
+    "Errors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    }
+  }
+}

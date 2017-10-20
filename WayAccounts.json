@@ -1,0 +1,525 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "OpenWay Accounts API. Сервис для работы со счетами W4",
+    "description": "API для работы со счетами OpenWay",
+    "contact": {
+      "name": "BANK RBK API team",
+      "email": "apiteam@bankrbk.kz",
+      "url": "http://www.bankrbk.kz"
+    }
+  },
+  "host": "10.1.1.114",
+  "basePath": "/v1/wayaccounts",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "oauth": {
+      "type": "oauth2",
+      "flow": "application",
+      "tokenUrl": "https://10.1.1.114/oauth/token",
+      "scopes": {
+        "wayAccounts:read": "Чтение данных по счетам"
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth": [
+        "wayAccounts:read"
+      ]
+    }
+  ],
+  "paths": {
+    "/{id}": {
+      "get": {
+        "tags": [
+          "Карточный счет"
+        ],
+        "summary": "Получение счета W4 по ИД",
+        "description": "Получение счета W4 по его уникальному идентификатору",
+        "operationId": "getWayAccountByID",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/accountIdFilter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает объект счета",
+            "schema": {
+              "$ref": "#/definitions/WayAccount"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/accountNumber/{no}": {
+      "get": {
+        "tags": [
+          "Карточный счет"
+        ],
+        "summary": "Получение счета OpenWay по его номеру IBAN",
+        "description": "Получение счета OpenWay по его номеру",
+        "operationId": "getWayAccountByNumber",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/accountNumberFilter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает объект счета",
+            "schema": {
+              "$ref": "#/definitions/WayAccount"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/customers/{clientno}": {
+      "get": {
+        "tags": [
+          "Счета Клиента"
+        ],
+        "summary": "Счета клиента",
+        "description": "Получение счетов клиента из OpenWay",
+        "operationId": "getCustomerWayAccounts",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "clientno",
+            "in": "path",
+            "description": "Сквозной идентификатор клиента (clientno)",
+            "required": true,
+            "type": "string",
+            "minLength": 1
+          },
+          {
+            "$ref": "#/parameters/includeClosedFilter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов счетов",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/definitions/WayAccount"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "includeClosedFilter": {
+      "name": "includeClosed",
+      "in": "query",
+      "required": true,
+      "description": "Фильтр для включения закрытых счетов",
+      "type": "boolean"
+    },
+    "accountIdFilter": {
+      "name": "id",
+      "in": "path",
+      "description": "ИД счета",
+      "required": true,
+      "type": "integer",
+      "format": "int64",
+      "minimum": 0,
+      "exclusiveMinimum": true
+    },
+    "accountNumberFilter": {
+      "name": "no",
+      "in": "path",
+      "description": "Номер счета",
+      "required": true,
+      "type": "string",
+      "minLength": 14,
+      "maxLength": 20,
+      "pattern": "[A-Za-z0-9]{14,20}"
+    }
+  },
+  "definitions": {
+    "ContractStatus": {
+      "type": "object",
+      "properties": {
+        "statusCode": {
+          "type": "string",
+          "description": "Код статуса контракта",
+          "minLength": 1
+        },
+        "statusName": {
+          "type": "string",
+          "description": "Название статуса",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "statusCode",
+        "statusName"
+      ]
+    },
+    "ContractProduct": {
+      "type": "object",
+      "properties": {
+        "productCode": {
+          "type": "string",
+          "description": "Код продукта",
+          "minLength": 1
+        },
+        "productName": {
+          "type": "string",
+          "description": "Наименование продукта",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "productCode",
+        "productName"
+      ]
+    },
+    "Division": {
+      "type": "object",
+      "description": "Отделение привязанное к счету",
+      "properties": {
+        "divisionType": {
+          "type": "string",
+          "description": "Тип отделения",
+          "minLength": 1
+        },
+        "code": {
+          "type": "string",
+          "description": "код отделения для процессинга",
+          "minLength": 1
+        },
+        "institute": {
+          "type": "string",
+          "description": "фин. институт для процессинга",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "Наименование отделения",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "divisionType",
+        "code",
+        "institute",
+        "name"
+      ]
+    },
+    "Card": {
+      "type": "object",
+      "description": "Объект карты",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Уникальный идентификатор контракта",
+          "format": "int64",
+          "minimum": 0,
+          "exclusiveMinimum": true
+        },
+        "cardNumberMasked": {
+          "type": "string",
+          "description": "Номер карты маскированный",
+          "minLength": 1
+        },
+        "rbsNumber": {
+          "type": "string",
+          "description": "Уникальный идентификатор карты во внешней системе",
+          "minLength": 1
+        },
+        "expire": {
+          "type": "string",
+          "description": "Срок действия (год без века и месяц)",
+          "minLength": 4,
+          "maxLength": 4
+        },
+        "holder": {
+          "type": "string",
+          "description": "Имя владельца, написанное на карте (латиница)",
+          "minLength": 1
+        },
+        "cardType": {
+          "type": "string",
+          "description": "Тип карты (Classic, GOLD etc)",
+          "minLength": 1
+        },
+        "imageUri": {
+          "type": "string",
+          "description": "Изображение карты",
+          "minLength": 1
+        },
+        "opened": {
+          "type": "string",
+          "description": "Дата открытия карты",
+          "format": "date",
+          "minLength": 10,
+          "maxLength": 10
+        },
+        "closed": {
+          "type": "string",
+          "description": "Дата закрытия карты",
+          "format": "date",
+          "minLength": 10,
+          "maxLength": 10
+        },
+        "status": {
+          "$ref": "#/definitions/ContractStatus"
+        },
+        "product": {
+          "$ref": "#/definitions/ContractProduct"
+        }
+      },
+      "required": [
+        "id",
+        "cardNumberMasked",
+        "expire",
+        "holder",
+        "status",
+        "opened",
+        "product",
+        "cardType"
+      ]
+    },
+    "WayAccount": {
+      "type": "object",
+      "description": "Объект счета",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Уникальный идентификатор контракта",
+          "format": "int64",
+          "minimum": 0,
+          "exclusiveMinimum": true
+        },
+        "no": {
+          "type": "string",
+          "description": "Номер счета (старые номера и IBAN (KZ[0-9]{5}[A-Za-z0-9]{13}))",
+          "minLength": 14,
+          "maxLength": 20,
+          "pattern": "[A-Za-z0-9]{14,20}"
+        },
+        "rbsNumber": {
+          "type": "string",
+          "description": "Уникальный идентификатор карты во внешней системе",
+          "minLength": 1
+        },
+        "clientno": {
+          "type": "string",
+          "description": "Сквозной идентификатор клиента",
+          "minLength": 1
+        },
+        "currency": {
+          "type": "string",
+          "description": "Буквенный код валюты (KZT, USD, EUR и т.д.)",
+          "minLength": 3,
+          "maxLength": 3,
+          "pattern": "[A-Z]{3}"
+        },
+        "balance": {
+          "type": "number",
+          "description": "Остаток на счете",
+          "format": "double"
+        },
+        "available": {
+          "type": "number",
+          "description": "Доступный остаток",
+          "format": "double"
+        },
+        "blocked": {
+          "type": "number",
+          "description": "Заблокированная сумма",
+          "format": "double"
+        },
+        "limit": {
+          "type": "number",
+          "description": "Кредитный лимит",
+          "format": "double"
+        },
+        "minBalance": {
+          "type": "number",
+          "description": "Минимальный неснижаемый остаток",
+          "format": "double"
+        },
+        "name": {
+          "type": "string",
+          "description": "Наименование контракта",
+          "minLength": 1
+        },
+        "opened": {
+          "type": "string",
+          "description": "Дата открытия счета",
+          "format": "date",
+          "minLength": 10,
+          "maxLength": 10
+        },
+        "closed": {
+          "type": "string",
+          "description": "Дата закрытия счета",
+          "format": "date",
+          "minLength": 10,
+          "maxLength": 10
+        },
+        "status": {
+          "$ref": "#/definitions/ContractStatus"
+        },
+        "product": {
+          "$ref": "#/definitions/ContractProduct"
+        },
+        "division": {
+          "$ref": "#/definitions/Division"
+        },
+        "cards": {
+          "type": "array",
+          "description": "Карты привязанные к счету",
+          "minItems": 0,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/Card"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "no",
+        "clientno",
+        "currency",
+        "balance",
+        "available",
+        "blocked",
+        "limit",
+        "status",
+        "opened",
+        "product",
+        "division"
+      ]
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "description": "Код ошибки",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string",
+          "description": "Тип ошибки. validation - ошибка бизнес логики. exception - техническая ошибка",
+          "enum": [
+            "validation",
+            "exception"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "description": "Текст ошибки",
+          "minLength": 0
+        },
+        "details": {
+          "type": "string",
+          "description": "Детали ошибки. Опционально",
+          "minLength": 0
+        }
+      },
+      "required": [
+        "code",
+        "type",
+        "message"
+      ]
+    },
+    "Errors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    }
+  }
+}

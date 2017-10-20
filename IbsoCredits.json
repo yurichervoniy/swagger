@@ -1,0 +1,1701 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "IBSO Credits API. Сервис для работы с кредитными договорами АБИС",
+    "description": "API для работы с с кредитными договорами АБИС IBSO",
+    "contact": {
+      "name": "BANK RBK API team",
+      "email": "apiteam@bankrbk.kz",
+      "url": "http://www.bankrbk.kz"
+    }
+  },
+  "host": "10.1.1.114",
+  "basePath": "/v1/ibsocredits",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "oauth": {
+      "type": "oauth2",
+      "flow": "application",
+      "tokenUrl": "https://10.1.1.114/oauth/token",
+      "scopes": {
+        "customerIbsoCredits:read": "Чтение данных по кредитным договорам клиента"
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth": [
+        "customerIbsoCredits:read"
+      ]
+    }
+  ],
+  "paths": {
+    "/{id}": {
+      "get": {
+        "tags": [
+          "Получение кредитного договора по идентификатору договора в IBSO"
+        ],
+        "summary": "Получение кредитного договора по идентификатору договора в IBSO",
+        "description": "Получение кредитного договора",
+        "operationId": "getCreditAgrById()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/AgreementId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает объект CreditAgreement",
+            "schema": {
+              "$ref": "#/definitions/CreditAgreement"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/ibsocustomers/{id}": {
+      "get": {
+        "tags": [
+          "Получение кредитных договоров по ИД клиента IBSO"
+        ],
+        "summary": "Получение кредитных договоров по ИД клиента IBSO",
+        "description": "Получение кредитных договоров",
+        "operationId": "getCreditAgrsByIbsoCustId()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ИД клиента",
+            "required": true,
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов CreditAgreement",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/CreditAgreement"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/customers/{clientno}": {
+      "get": {
+        "tags": [
+          "Получение кредитных договоров по сквозному ИД клиента"
+        ],
+        "summary": "Получение кредитных договоров по сквозному ИД клиента",
+        "description": "Получение кредитных договоров",
+        "operationId": "getCreditAgrsByClientNo()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "clientno",
+            "in": "path",
+            "required": true,
+            "description": "Идентификатор клиента (clientno)",
+            "type": "string",
+            "minLength": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов CreditAgreement",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/CreditAgreement"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/{id}/accounts": {
+      "get": {
+        "tags": [
+          "Получение счетов кредитного договора"
+        ],
+        "summary": "Получение счетов кредитного договора",
+        "description": "Получение счетов кредитного договора",
+        "operationId": "getCreditAgrAccounts()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/AgreementId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов AgreementAccount",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/AgreementAccount"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/{id}/classifications": {
+      "get": {
+        "tags": [
+          "Получение классификаций кредитного договора"
+        ],
+        "summary": "Получение классификаций кредитного договора",
+        "description": "Получение классификаций кредитного договора",
+        "operationId": "getCreditAgrClassifications()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/AgreementId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает объект Classifications",
+            "schema": {
+              "$ref": "#/definitions/Classifications"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/{id}/debtors": {
+      "get": {
+        "tags": [
+          "Получение созаемщиков/созалогодатели"
+        ],
+        "summary": "Получение созаемщиков//созалогодатели",
+        "description": "Получение созаемщиков//созалогодатели",
+        "operationId": "getCreditAgrDebtors()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/AgreementId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов Debtor",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/Debtor"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/{id}/collaterals": {
+      "get": {
+        "tags": [
+          "Получение договоров обеспечений"
+        ],
+        "summary": "Получение договоров обеспечений",
+        "description": "Получение договоров обеспечений",
+        "operationId": "getCreditAgrCollaterals()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/AgreementId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов Agreement",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/Agreement"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/{id}/installments": {
+      "get": {
+        "tags": [
+          "Получение плановых операций по договору"
+        ],
+        "summary": "Получение плановых операций по договору",
+        "description": "Получение плановых операций по договору",
+        "operationId": "getCreditAgrInstallments()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/AgreementId"
+          },
+          {
+            "$ref": "#/parameters/StartDateFilter"
+          },
+          {
+            "$ref": "#/parameters/EndDateFilter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов Installment",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/Installment"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/{id}/prolongations": {
+      "get": {
+        "tags": [
+          "Получение пролонгаций"
+        ],
+        "summary": "Получение пролонгаций",
+        "description": "Получение пролонгаций",
+        "operationId": "getCreditProlongations()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/AgreementId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает объект Prolongation",
+            "schema": {
+              "$ref": "#/definitions/Prolongation"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/{id}/payments": {
+      "get": {
+        "tags": [
+          "Получение плана получения кредита (детализация графика)"
+        ],
+        "summary": "Получение плана получения кредита (детализация графика)",
+        "description": "Получение плана получения кредита (детализация графика)",
+        "operationId": "getCreditPayments()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/AgreementId"
+          },
+          {
+            "name": "atDate",
+            "in": "query",
+            "description": "На указанную дату (По умолчанию текущая дата)",
+            "required": false,
+            "type": "string",
+            "format": "date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов PaymentsSchedule",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/PaymentsSchedule"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/{id}/payinstallments": {
+      "get": {
+        "tags": [
+          "Получение фактических операций кредитного договора"
+        ],
+        "summary": "Получение фактических операций кредитного договора",
+        "description": "Получение фактических операций кредитного договора",
+        "operationId": "getCreditPayInstallments()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/AgreementId"
+          },
+          {
+            "$ref": "#/parameters/StartDateFilter"
+          },
+          {
+            "$ref": "#/parameters/EndDateFilter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов PayInstallment",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/PayInstallment"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/{id}/overduesstatus": {
+      "get": {
+        "tags": [
+          "Получения состояния по задолженности контракта на указанную дату"
+        ],
+        "summary": "Получения состояния по задолженности контракта на указанную дату",
+        "description": "Получения состояния по задолженности контракта на указанную дату",
+        "operationId": "getCreditOverdueStatus()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/AgreementId"
+          },
+          {
+            "name": "atdate",
+            "in": "query",
+            "description": "На указанную дату",
+            "required": true,
+            "type": "string",
+            "format": "date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов Overdue",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/Overdue"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "AgreementId": {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "description": "ИД договора IBSO",
+      "type": "integer",
+      "format": "int64",
+      "minimum": 0,
+      "exclusiveMinimum": true
+    },
+    "StartDateFilter": {
+      "name": "startDate",
+      "in": "query",
+      "description": "Дата начала выборки",
+      "type": "string",
+      "format": "date",
+      "required": false
+    },
+    "EndDateFilter": {
+      "name": "endDate",
+      "in": "query",
+      "description": "Дата окончания выборки",
+      "type": "string",
+      "format": "date",
+      "required": false
+    }
+  },
+  "definitions": {
+    "Agreement": {
+      "type": "object",
+      "description": "Объект договора",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "ИД договора",
+          "minimum": 0,
+          "exclusiveMinimum": true
+        },
+        "atDate": {
+          "type": "string",
+          "format": "date",
+          "description": "По состоянию на дату"
+        },
+        "agrType": {
+          "type": "string",
+          "description": "Тип договора",
+          "minLength": 1
+        },
+        "no": {
+          "type": "string",
+          "description": "Номер договора",
+          "minLength": 1
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата начала действия договора"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата окончания действия договора"
+        },
+        "createdDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата создания договора"
+        },
+        "closedDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата закрытия договора"
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Признак действующего договора"
+        }
+      },
+      "required": [
+        "id",
+        "atDate",
+        "agrType",
+        "no",
+        "startDate",
+        "createdDate",
+        "isActive"
+      ]
+    },
+    "CreditAgreement": {
+      "description": "Объект кредитного договора",
+      "type": "object",
+      "properties": {
+        "agreement": {
+          "$ref": "#/definitions/Agreement"
+        },
+        "statusCode": {
+          "type": "string",
+          "description": "Статус кредита",
+          "minLength": 1
+        },
+        "statusName": {
+          "type": "string",
+          "description": "Наименование статуса",
+          "minLength": 1
+        },
+        "classCode": {
+          "type": "string",
+          "description": "Код класса кредитного договора",
+          "minLength": 1
+        },
+        "className": {
+          "type": "string",
+          "description": "Наименование класса кредитного договора",
+          "minLength": 1
+        },
+        "agreementTypeCode": {
+          "type": "string",
+          "description": "Код вида договора",
+          "minLength": 1
+        },
+        "agreementTypeName": {
+          "type": "string",
+          "description": "Наименование вида договора",
+          "minLength": 1
+        },
+        "creditTypeCode": {
+          "type": "string",
+          "description": "Код вида кредита",
+          "minLength": 1
+        },
+        "creditTypeName": {
+          "type": "string",
+          "description": "Наименование вида кредита",
+          "minLength": 1
+        },
+        "currency": {
+          "type": "string",
+          "description": "Буквенный код валюты (KZT, USD, EUR и т.д.)",
+          "minLength": 3,
+          "maxLength": 3,
+          "pattern": "[A-Z]{3}"
+        },
+        "rate": {
+          "type": "number",
+          "description": "Ставка по договору",
+          "format": "double"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Сумма по договору",
+          "format": "double"
+        },
+        "limit": {
+          "type": "number",
+          "description": "Лимит по договору",
+          "format": "double"
+        },
+        "currentAmount": {
+          "type": "number",
+          "description": "Текущий остаток ОД",
+          "format": "double"
+        },
+        "overdueAmount": {
+          "type": "number",
+          "description": "Просроченная сумма ОД",
+          "format": "double"
+        },
+        "account": {
+          "type": "string",
+          "description": "Ссудный счет по договору",
+          "minLength": 14,
+          "maxLength": 20,
+          "pattern": "[A-Za-z0-9]{14,20}"
+        },
+        "marketingName": {
+          "type": "string",
+          "description": "Маркетинговое наименование",
+          "minLength": 1
+        },
+        "periodCode": {
+          "type": "string",
+          "description": "Код измерения периода",
+          "enum": [
+            "D",
+            "Y",
+            "C",
+            "Q",
+            "M",
+            "HY"
+          ]
+        },
+        "periodValue": {
+          "type": "integer",
+          "description": "Количество",
+          "minLength": 1
+        },
+        "lastProlongationDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата последней пролонгации"
+        },
+        "nextPaymentAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Сумма следующего платежа"
+        },
+        "nextPaymentDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата следующего платежа"
+        },
+        "isTransh": {
+          "type": "boolean",
+          "description": "Признак транша для договора"
+        },
+        "parentCreditAgreement": {
+          "type": "object",
+          "properties": {
+            "agreement": {
+              "$ref": "#/definitions/Agreement"
+            },
+            "amount": {
+              "type": "number",
+              "format": "double",
+              "description": "Сумма"
+            },
+            "currency": {
+              "type": "string",
+              "description": "Буквенный код валюты (KZT, USD, EUR и т.д.)",
+              "minLength": 3,
+              "maxLength": 3,
+              "pattern": "[A-Z]{3}"
+            }
+          }
+        },
+        "division": {
+          "$ref": "#/definitions/Division"
+        },
+        "customer": {
+          "$ref": "#/definitions/Customer"
+        },
+        "productBaseUrl": {
+          "type": "string",
+          "description": "Ссылка на описание кредитного продукта",
+          "minLength": 1,
+          "example": "https://www.bankrbk.kz/rus/private/credit/#credit1/"
+        }
+      },
+      "required": [
+        "agreement",
+        "statusCode",
+        "statusName",
+        "division",
+        "currency",
+        "customer",
+        "parentCreditAgreement",
+        "rate",
+        "amount",
+        "currentAmount"
+      ]
+    },
+    "Customer": {
+      "type": "object",
+      "description": "Клиент",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "ИД клиента",
+          "minLength": 1
+        },
+        "clientno": {
+          "type": "string",
+          "description": "Сквозной идентификатор клиента",
+          "minLength": 1
+        },
+        "taxnumber": {
+          "type": "string",
+          "description": "ИИН/БИН клиента",
+          "pattern": "[0-9]{12}"
+        },
+        "customerType": {
+          "type": "string",
+          "description": "Тип клиента",
+          "enum": [
+            "CL_PRIV",
+            "CL_CORP"
+          ]
+        },
+        "customerName": {
+          "type": "string",
+          "description": "Наименование клиента",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "clientno",
+        "taxnumber",
+        "customerType",
+        "customerName"
+      ]
+    },
+    "Division": {
+      "type": "object",
+      "description": "Отделение привязанное к счету",
+      "properties": {
+        "divisionType": {
+          "type": "string",
+          "description": "Тип отделения",
+          "minLength": 1
+        },
+        "index": {
+          "type": "string",
+          "description": "Внутренний индекс отделения",
+          "minLength": 1
+        },
+        "code": {
+          "type": "string",
+          "description": "код отделения для процессинга",
+          "minLength": 1
+        },
+        "institute": {
+          "type": "string",
+          "description": "фин. институт для процессинга",
+          "minLength": 1
+        },
+        "no": {
+          "type": "string",
+          "description": "номер",
+          "minLength": 1
+        },
+        "parent": {
+          "type": "string",
+          "description": "Родительский индекс отделения",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "Наименование отделения",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "divisionType",
+        "index",
+        "name"
+      ]
+    },
+    "AgreementAccount": {
+      "type": "object",
+      "description": "Счета договора",
+      "properties": {
+        "no": {
+          "type": "string",
+          "description": "Номер счета (старые номера и IBAN (KZ[0-9]{5}[A-Za-z0-9]{13}))",
+          "minLength": 14,
+          "maxLength": 20,
+          "pattern": "[A-Za-z0-9]{14,20}"
+        },
+        "roleCode": {
+          "type": "string",
+          "description": "Код роли счета в привязке",
+          "minLength": 1
+        },
+        "roleName": {
+          "type": "string",
+          "description": "Наименование роли счета в привязке",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "no",
+        "roleCode",
+        "roleName"
+      ]
+    },
+    "Classifications": {
+      "type": "object",
+      "description": "Классификации",
+      "properties": {
+        "creditSourceCode": {
+          "type": "string",
+          "description": "Код источника кредитования",
+          "minLength": 1
+        },
+        "creditSourceName": {
+          "type": "string",
+          "description": "Наименование источника кредитования",
+          "minLength": 1
+        },
+        "fundingSourceCode": {
+          "type": "string",
+          "description": "Код источника финансирования",
+          "minLength": 1
+        },
+        "fundingSourceName": {
+          "type": "string",
+          "description": "Наименование источника финансирования",
+          "minLength": 1
+        },
+        "nbrkPurposeCode": {
+          "type": "string",
+          "description": "Код  цели по НБРК",
+          "minLength": 1
+        },
+        "nbrkPurposeName": {
+          "type": "string",
+          "description": "Наименование цели по НБРК",
+          "minLength": 1
+        },
+        "nbrkFundingCode": {
+          "type": "string",
+          "description": "Код финансирования по НБРК",
+          "minLength": 1
+        },
+        "nbrkFundingName": {
+          "type": "string",
+          "description": "Значение кода финансирования по НБРК",
+          "minLength": 1
+        },
+        "purposes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "isMain": {
+                "type": "boolean",
+                "description": "Основная цель"
+              },
+              "code": {
+                "type": "integer",
+                "description": "Код цели",
+                "format": "int32",
+                "minimum": 0,
+                "exclusiveMinimum": true
+              },
+              "name": {
+                "type": "string",
+                "description": "Наименование цели",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "Debtor": {
+      "type": "object",
+      "description": "Созаемщик/Созалогодатель",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Уникальный идентификатор",
+          "format": "int64",
+          "minimum": 0,
+          "exclusiveMinimum": true
+        },
+        "clientno": {
+          "type": "string",
+          "description": "Сквозной идентификатор клиента",
+          "minLength": 1
+        },
+        "taxnumber": {
+          "type": "string",
+          "description": "ИИН/БИН",
+          "pattern": "[0-9]{12}"
+        },
+        "customerType": {
+          "type": "string",
+          "description": "Тип клиента",
+          "enum": [
+            "CL_PRIV",
+            "CL_CORP"
+          ]
+        },
+        "debtorName": {
+          "type": "string",
+          "description": "Наименование участника",
+          "minLength": 1
+        },
+        "roleCode": {
+          "type": "string",
+          "description": "Код роли участника",
+          "minLength": 1
+        },
+        "roleName": {
+          "type": "string",
+          "description": "Наименование роли",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "clientno",
+        "customerType",
+        "debtorName",
+        "roleCode",
+        "roleName"
+      ]
+    },
+    "Installment": {
+      "type": "object",
+      "description": "Плановая операция",
+      "properties": {
+        "installmentId": {
+          "type": "integer",
+          "format": "int64",
+          "description": "ИД операции IBSO"
+        },
+        "stamp": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата плановой операции"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата начала плановой операции"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата окончания плановой операции"
+        },
+        "action": {
+          "$ref": "#/definitions/Action"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Буквенный код валюты (KZT, USD, EUR и т.д.)",
+          "minLength": 3,
+          "maxLength": 3,
+          "pattern": "[A-Z]{3}"
+        },
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "Сумма плановой операции"
+        },
+        "isExecuted": {
+          "type": "boolean",
+          "description": "Признак исполнения операции"
+        },
+        "execAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Исполненная сумма операции"
+        },
+        "regAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Сумма в валюте учета"
+        },
+        "regExecAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Исполненная сумма в валюте учета"
+        },
+        "referenceToDoc": {
+          "type": "string",
+          "description": "Ссылка на номер документа",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "installmentId",
+        "stamp",
+        "action",
+        "currency",
+        "amount",
+        "isExecuted"
+      ]
+    },
+    "Prolongation": {
+      "type": "object",
+      "description": "Пролонгация",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Количество пролонгаций"
+        },
+        "plans": {
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "$ref": "#/definitions/Plan"
+          }
+        }
+      },
+      "required": [
+        "count"
+      ]
+    },
+    "Plan": {
+      "type": "object",
+      "description": "План пролонгации",
+      "properties": {
+        "signDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата подписания"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата начала"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата окончания"
+        },
+        "daysCount": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Количество дней",
+          "minimum": 0,
+          "exclusiveMinimum": true
+        }
+      }
+    },
+    "PaymentsSchedule": {
+      "type": "object",
+      "description": "Детализация графика",
+      "properties": {
+        "scheduleAtDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Данные на дату"
+        },
+        "payments": {
+          "$ref": "#/definitions/Payments"
+        }
+      },
+      "required": [
+        "scheduleAtDate"
+      ]
+    },
+    "Payments": {
+      "type": "object",
+      "description": "Платежи",
+      "properties": {
+        "planDeclaredTotal": {
+          "type": "number",
+          "format": "double",
+          "description": "Текущая планируемая сумма кредита"
+        },
+        "currentPlanTotal": {
+          "type": "number",
+          "format": "double",
+          "description": "Текущий кредитный план по графику"
+        },
+        "currentPlanOverallTotal": {
+          "type": "number",
+          "format": "double",
+          "description": "Текущий кредитный план, включая проценты"
+        },
+        "installmentsCount": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Ожидаемое количество платежей"
+        },
+        "payments": {
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "$ref": "#/definitions/Payment"
+          }
+        }
+      },
+      "required": [
+        "planDeclaredTotal",
+        "currentPlanTotal",
+        "currentPlanOverallTotal",
+        "installmentsCount"
+      ]
+    },
+    "Payment": {
+      "type": "object",
+      "description": "Платеж",
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "Дата платежа",
+          "format": "date"
+        },
+        "baseDebt": {
+          "type": "number",
+          "format": "double",
+          "description": "Базовая сумма основного долга"
+        },
+        "percent": {
+          "type": "number",
+          "format": "double",
+          "description": "Проценты"
+        },
+        "paymentAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Сумма платежа (Базовая сумма + проценты)"
+        },
+        "outstandingAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Сумма предстоящих платежей по кредиту"
+        },
+        "outstandingOverallAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Сумма предстоящих платежей по кредитуЮ включая проценты"
+        },
+        "outstandingCount": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Количество предстоящих платежей по кредиту"
+        }
+      },
+      "required": [
+        "date",
+        "baseDebt",
+        "percent",
+        "paymentAmount",
+        "outstandingAmount",
+        "outstandingOverallAmount",
+        "outstandingCount"
+      ]
+    },
+    "PayInstallment": {
+      "type": "object",
+      "description": "Фактическая операция",
+      "properties": {
+        "operationId": {
+          "type": "integer",
+          "format": "int64",
+          "description": "ИД операции"
+        },
+        "stamp": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата фактической операции"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата начала фактической операции"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата окончания фактической операции"
+        },
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "Сумма"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Буквенный код валюты (KZT, USD, EUR и т.д.)",
+          "minLength": 3,
+          "maxLength": 3,
+          "pattern": "[A-Z]{3}"
+        },
+        "regAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Сумма в валюте счета"
+        },
+        "referenceToDoc": {
+          "type": "string",
+          "description": "Ссылка на документ",
+          "minLength": 1
+        },
+        "action": {
+          "$ref": "#/definitions/Action"
+        }
+      },
+      "required": [
+        "operationId",
+        "stamp",
+        "action",
+        "currency",
+        "amount"
+      ]
+    },
+    "Action": {
+      "type": "object",
+      "description": "Операция (Действие)",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Код операции",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "Наименование операции",
+          "minLength": 1
+        },
+        "isHidden": {
+          "type": "boolean",
+          "description": "Признак скрытой операции"
+        }
+      },
+      "required": [
+        "code",
+        "name"
+      ]
+    },
+    "Overdue": {
+      "type": "object",
+      "description": "Задолженность",
+      "properties": {
+        "lateReleaseDate": {
+          "type": "string",
+          "description": "Дата последнего платежа",
+          "format": "date"
+        },
+        "lastPaymentDate": {
+          "type": "string",
+          "description": "Дата выхода на просрочку",
+          "format": "date"
+        },
+        "accruedInterest": {
+          "type": "number",
+          "format": "double",
+          "description": "Просроченное вознаграждение"
+        },
+        "arrearsBalance": {
+          "type": "number",
+          "format": "double",
+          "description": "Просроченный основной долг"
+        },
+        "fine": {
+          "type": "number",
+          "format": "double",
+          "description": "Пеня на просроченный основной долг+вознаграждение"
+        },
+        "grossDebt": {
+          "type": "number",
+          "format": "double",
+          "description": "Сумма просроченного вознаграждения + просроченный ОД + Пеня"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Буквенный код валюты (KZT, USD, EUR и т.д.)",
+          "minLength": 3,
+          "maxLength": 3,
+          "pattern": "[A-Z]{3}"
+        },
+        "rate": {
+          "type": "number",
+          "format": "double",
+          "description": "Месячная % ставка по договору"
+        },
+        "overdueDays": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Количество дней просрочки"
+        },
+        "acc14bsAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Основной долг"
+        },
+        "acc1424Amount": {
+          "type": "number",
+          "format": "double",
+          "description": "Просроченный основной долг"
+        },
+        "acc1741Amount": {
+          "type": "number",
+          "format": "double",
+          "description": "Просроченное вознаграждение"
+        },
+        "acc1740Amount": {
+          "type": "number",
+          "format": "double",
+          "description": "Начисленное вознаграждение"
+        },
+        "inter14bs": {
+          "type": "number",
+          "format": "double",
+          "description": "Вознаграждение на основной долг по текущую дату"
+        },
+        "inter1424": {
+          "type": "number",
+          "format": "double",
+          "description": "Вознаграждение на просроченный ОД"
+        },
+        "penalty1424": {
+          "type": "number",
+          "format": "double",
+          "description": "Пеня на просроченный основной долг"
+        },
+        "penalty1741": {
+          "type": "number",
+          "format": "double",
+          "description": "Пеня на просроченное вознаграждение"
+        },
+        "stateFee": {
+          "type": "object",
+          "description": "Государственная пошлина",
+          "properties": {
+            "amount": {
+              "type": "number",
+              "format": "double",
+              "description": "Сумма"
+            },
+            "currency": {
+              "type": "string",
+              "description": "Буквенный код валюты (KZT, USD, EUR и т.д.)",
+              "minLength": 3,
+              "maxLength": 3,
+              "pattern": "[A-Z]{3}"
+            }
+          },
+          "required": [
+            "amount",
+            "currency"
+          ]
+        },
+        "accounts": {
+          "type": "array",
+          "description": "Список расчётных счетов клиента",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "no": {
+                "type": "string",
+                "description": "Номер счета (старые номера и IBAN (KZ[0-9]{5}[A-Za-z0-9]{13}))",
+                "minLength": 14,
+                "maxLength": 20,
+                "pattern": "[A-Za-z0-9]{14,20}"
+              },
+              "currency": {
+                "type": "string",
+                "description": "Буквенный код валюты (KZT, USD, EUR и т.д.)",
+                "minLength": 3,
+                "maxLength": 3,
+                "pattern": "[A-Z]{3}"
+              },
+              "balance": {
+                "type": "number",
+                "format": "double",
+                "description": "Остаток на счёте"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "lateReleaseDate",
+        "lastPaymentDate",
+        "accruedInterest",
+        "arrearsBalance",
+        "fine",
+        "grossDebt",
+        "currency",
+        "rate",
+        "overdueDays",
+        "acc14bsAmount",
+        "acc1424Amount",
+        "acc1741Amount",
+        "acc1740Amount",
+        "inter14bs",
+        "inter1424",
+        "penalty1424",
+        "penalty1741",
+        "accounts"
+      ]
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "description": "Код ошибки",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string",
+          "description": "Тип ошибки. validation - ошибка бизнес логики. exception - техническая ошибка",
+          "enum": [
+            "validation",
+            "exception"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "description": "Текст ошибки",
+          "minLength": 0
+        },
+        "details": {
+          "type": "string",
+          "description": "Детали ошибки. Опционально",
+          "minLength": 0
+        }
+      },
+      "required": [
+        "code",
+        "type",
+        "message"
+      ]
+    },
+    "Errors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    }
+  }
+}

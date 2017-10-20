@@ -1,0 +1,585 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Divisions API. Сервис подразделений",
+    "description": "API для работы с подразделениями",
+    "contact": {
+      "name": "BANK RBK API team",
+      "email": "apiteam@bankrbk.kz",
+      "url": "http://www.bankrbk.kz"
+    }
+  },
+  "host": "10.1.1.114",
+  "basePath": "/v1/ibsodictionaries",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "oauth": {
+      "type": "oauth2",
+      "flow": "application",
+      "tokenUrl": "https://10.1.1.114/oauth/token",
+      "scopes": {
+        "ibsoDivisions:read": "Чтение данных по отделениям"
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth": [
+        "ibsoDivisions:read"
+      ]
+    }
+  ],
+  "paths": {
+    "/divisions": {
+      "get": {
+        "tags": [
+          "Получение списка подразделений"
+        ],
+        "summary": "Получение списка подразделений",
+        "description": "Получение списка подразделений",
+        "operationId": "getDivisionsList",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "parentCode",
+            "in": "query",
+            "description": "Поиск подразделений по коду родительского, уточняющий параметр фильтрации",
+            "required": false,
+            "type": "string",
+            "minLength": 2
+          },
+          {
+            "name": "okato",
+            "in": "query",
+            "description": "Код региона (КАТО) (https://data.egov.kz/datasets/view?index=kato)",
+            "required": false,
+            "type": "string",
+            "minLength": 2
+          },
+          {
+            "name": "divisionType",
+            "in": "query",
+            "description": "Тип подразделения (1 - Филиал, 2 - Подразделение, 3 - Отделение)",
+            "required": false,
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов Division",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/Division"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/divisions/{code}": {
+      "get": {
+        "tags": [
+          "Получение подразделения по коду"
+        ],
+        "summary": "Получение подразделения",
+        "description": "Получение подразделения по коду",
+        "operationId": "getDivisionByCode",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "description": "Код подразделения",
+            "required": true,
+            "type": "string",
+            "minLength": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает объект Division",
+            "schema": {
+              "$ref": "#/definitions/Division"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/divisions/{code}/schedule": {
+      "get": {
+        "tags": [
+          "Получение режима работы"
+        ],
+        "summary": "Получение режима работы",
+        "description": "Получение режима работы",
+        "operationId": "getSchedule()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/DivisionCode"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив Days",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/Day"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/divisions/{code}/exchange": {
+      "get": {
+        "tags": [
+          "Получение режима работы для обменного пункта"
+        ],
+        "summary": "Получение режима работы для обменного пункта",
+        "description": "Получение режима работы для обменного пункта",
+        "operationId": "getExchange()",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/DivisionCode"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает ExchangeSchedule",
+            "schema": {
+              "$ref": "#/definitions/ExchangeSchedule"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/divisions/{code}/calendar": {
+      "get": {
+        "tags": [
+          "Получение режима работы"
+        ],
+        "summary": "Получение режима работы",
+        "description": "При данном запросе, отсчет дней в календаре начинается со следующего дня после текущего дня (даты запроса), количество дней, возвращенных в календаре, равно 14.",
+        "operationId": "getCalendar",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/DivisionCode"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает массив объектов CalendarDay",
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/CalendarDay"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "DivisionCode": {
+      "name": "code",
+      "in": "path",
+      "type": "string",
+      "description": "Код подразделения",
+      "required": true,
+      "minLength": 1
+    }
+  },
+  "definitions": {
+    "Division": {
+      "type": "object",
+      "required": [
+        "code",
+        "parentDivision",
+        "bin",
+        "type",
+        "name",
+        "w4code",
+        "okato",
+        "long",
+        "lat",
+        "address"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Код подразделения",
+          "minLength": 3,
+          "pattern": "[0-9/-]"
+        },
+        "bin": {
+          "type": "string",
+          "description": "БИН подразделения",
+          "minLength": 12,
+          "maxLength": 12,
+          "pattern": "[0-9]"
+        },
+        "type": {
+          "type": "integer",
+          "description": "Тип подразделения (1 - Филиал, 2 - Подразделения, 3 - Отделение)",
+          "enum": [
+            1,
+            2,
+            3
+          ]
+        },
+        "w4code": {
+          "type": "string",
+          "description": "Код в OpenWay",
+          "minLength": 2,
+          "maxLength": 2,
+          "pattern": "[0-9]"
+        },
+        "w4institute": {
+          "type": "string",
+          "description": "Код фининститута в OpenWay",
+          "minLength": 4,
+          "maxLength": 4,
+          "pattern": "[0-9]"
+        },
+        "okato": {
+          "type": "string",
+          "description": "Код ОКАТО",
+          "minLength": 1,
+          "pattern": "[0-9]"
+        },
+        "ceo": {
+          "type": "string",
+          "description": "Имя CEO",
+          "minLength": 3
+        },
+        "ca": {
+          "type": "string",
+          "description": "Имя СА",
+          "minLength": 3
+        },
+        "name": {
+          "type": "string",
+          "description": "Наименование подразделения",
+          "minLength": 1
+        },
+        "address": {
+          "type": "string",
+          "description": "Адрес",
+          "minItems": 1
+        },
+        "lat": {
+          "type": "number",
+          "description": "Координаты, широта",
+          "format": "double"
+        },
+        "long": {
+          "type": "number",
+          "description": "Координаты, долгота",
+          "format": "double"
+        },
+        "parentDivision": {
+          "$ref": "#/definitions/ParentDivision"
+        },
+        "contacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Contact"
+          }
+        }
+      }
+    },
+    "Contact": {
+      "type": "object",
+      "required": [
+        "category",
+        "value"
+      ],
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Категория",
+          "minLength": 1
+        },
+        "value": {
+          "type": "string",
+          "description": "Значение",
+          "minLength": 2
+        }
+      }
+    },
+    "ParentDivision": {
+      "type": "object",
+      "required": [
+        "code",
+        "name",
+        "url"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Код родительского подразделения",
+          "minLength": 3
+        },
+        "name": {
+          "type": "string",
+          "description": "Наименование родительского подразделения",
+          "minLength": 3
+        },
+        "url": {
+          "type": "string",
+          "description": "URL для получения подразделений для данного родительского подразделения",
+          "format": "url"
+        }
+      },
+      "example": {
+        "code": 1,
+        "name": "Головной офис",
+        "url": "http://10.1.1.114/v1//divisions?parentCode=001"
+      }
+    },
+    "Day": {
+      "type": "object",
+      "required": [
+        "dayOfWeek",
+        "type",
+        "from",
+        "to",
+        "break"
+      ],
+      "properties": {
+        "dayOfWeek": {
+          "type": "string",
+          "description": "День недели",
+          "enum": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday"
+          ]
+        },
+        "type": {
+          "type": "string",
+          "description": "Рабочий/Выходной",
+          "enum": [
+            "work",
+            "weekend"
+          ]
+        },
+        "from": {
+          "type": "string",
+          "description": "Время работы с",
+          "format": "time"
+        },
+        "to": {
+          "type": "string",
+          "description": "Время работы до",
+          "format": "time"
+        },
+        "break": {
+          "type": "object",
+          "required": [
+            "from",
+            "to"
+          ],
+          "properties": {
+            "from": {
+              "type": "string",
+              "description": "Время перерыва с",
+              "format": "time"
+            },
+            "to": {
+              "type": "string",
+              "description": "Время перерыва до",
+              "format": "time"
+            }
+          }
+        }
+      }
+    },
+    "CalendarDay": {
+      "type": "object",
+      "properties": {
+        "day": {
+          "allOf": [
+            {
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "format": "date"
+                }
+              }
+            },
+            {
+              "$ref": "#/definitions/Day"
+            }
+          ]
+        }
+      }
+    },
+    "ExchangeSchedule": {
+      "type": "object",
+      "description": "График работы для обменного пункта",
+      "properties": {
+        "days": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Day"
+          }
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "description": "Код ошибки",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string",
+          "description": "Тип ошибки. validation - ошибка бизнес логики. exception - техническая ошибка",
+          "enum": [
+            "validation",
+            "exception"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "description": "Текст ошибки",
+          "minLength": 0
+        },
+        "details": {
+          "type": "string",
+          "description": "Детали ошибки. Опционально",
+          "minLength": 0
+        }
+      },
+      "required": [
+        "code",
+        "type",
+        "message"
+      ]
+    },
+    "Errors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    }
+  }
+}

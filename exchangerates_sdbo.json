@@ -1,0 +1,316 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Exchange Rates API. Курсы валют.",
+        "description": "API для работы с курсами валют.",
+        "contact": {
+            "name": "BANK RBK API team",
+            "email": "apiteam@bankrbk.kz",
+            "url": "http://www.bankrbk.kz"
+        }
+    },
+    "host": "10.1.1.114",
+    "basePath": "/v1/sdborates",
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/exchangerates": {
+            "get": {
+                "tags": [
+                    "Виды цен за еденицу валюты",
+                    "Валютообменные операции",
+                    "Действующие курсы"
+                ],
+                "summary": "Виды цен за еденицу валюты",
+                "description": "Действующие курсы. Получение видов цен за еденицу валюты применяемых в валютообменных операциях.",
+                "operationId": "getExchangeRates",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "okato",
+                        "in": "query",
+                        "description": "Код региона (КАТО) (https://data.egov.kz/datasets/view?index=kato)",
+                        "required": false,
+                        "type": "string",
+                        "minLength": 2
+                    },
+                    {
+                        "in": "query",
+                        "name": "clientID",
+                        "description": "Идентификатор клиента. Если указан делает уточняющую выборку по подразделениям",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "priceLists",
+                        "description": "Выбрать только по указанным кодам обменного курса",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "cash",
+                                "nocash",
+                                "processing"
+                            ]
+                        },
+                        "collectionFormat": "csv"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Возвращает массив объектов Rate",
+                        "schema": {
+                            "type": "array",
+                            "minItems": 1,
+                            "uniqueItems": true,
+                            "items": {
+                                "$ref": "#/definitions/Rate"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/nbrkrates": {
+            "get": {
+                "tags": [
+                    "Курсы национального банка",
+                    "Действующие курсы"
+                ],
+                "summary": "Виды цен за еденицу валюты",
+                "description": "Действующие курсы. Получение видов цен за еденицу валюты применяемых в валютообменных операциях.",
+                "operationId": "getNbrkRates",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Возвращает массив объектов NbrkRate",
+                        "schema": {
+                            "type": "array",
+                            "minItems": 1,
+                            "uniqueItems": true,
+                            "items": {
+                                "$ref": "#/definitions/NbrkRate"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "PriceList": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "Код обменного курса (nocash - Безналичные курсы, cash - Курсы валют в обменных пунктах, processing - Курсы процессинга)",
+                    "enum": [
+                        "cash",
+                        "nocash",
+                        "processing"
+                    ]
+                },
+                "displayName": {
+                    "type": "string",
+                    "description": "Наименование обменного курса",
+                    "minLength": 1
+                }
+            },
+            "required": [
+                "code",
+                "displayName"
+            ]
+        },
+        "Rate": {
+            "type": "object",
+            "description": "Курс пары валют",
+            "properties": {
+                "operation": {
+                    "type": "string",
+                    "description": "Вид операции. buy - покупка, sell - продажа",
+                    "enum": [
+                        "buy",
+                        "sell"
+                    ]
+                },
+                "source": {
+                    "type": "string",
+                    "description": "Буквенный код базовой валюты.",
+                    "minLength": 3,
+                    "maxLength": 3,
+                    "pattern": "[A-Z]"
+                },
+                "target": {
+                    "type": "string",
+                    "description": "Буквенный код оценочной валюты.",
+                    "minLength": 3,
+                    "maxLength": 3,
+                    "pattern": "[A-Z]"
+                },
+                "nominal": {
+                    "type": "number",
+                    "description": "Номинал базовой валюты",
+                    "format": "double"
+                },
+                "value": {
+                    "type": "number",
+                    "description": "Курс, за nominal базы дают value target",
+                    "format": "double"
+                },
+                "startDate": {
+                    "type": "string",
+                    "description": "Дата и время начала действия курса",
+                    "format": "date-time"
+                },
+                "priceList": {
+                    "$ref": "#/definitions/PriceList"
+                },
+                "divisionCode": {
+                    "type": "string",
+                    "description": "Код структурного подразделения для которого действует курс если указан"
+                }
+            },
+            "required": [
+                "operation",
+                "source",
+                "target",
+                "nominal",
+                "value",
+                "startDate",
+                "priceList"
+            ],
+            "example": {
+                "operation": "buy",
+                "source": "EUR",
+                "target": "KZT",
+                "nomina": "1.00",
+                "amount": "55.1465",
+                "startDate": "2017-04-04T15:25:43.511Z",
+                "priceList": {
+                    "code": "bnk",
+                    "displayName": "Курс процессинга"
+                }
+            }
+        },
+        "NbrkRate": {
+            "type": "object",
+            "description": "Курс пары валют нац. банка",
+            "properties": {
+                "source": {
+                    "type": "string",
+                    "description": "Буквенный код базовой валюты.",
+                    "minLength": 3,
+                    "maxLength": 3,
+                    "pattern": "[A-Z]"
+                },
+                "target": {
+                    "type": "string",
+                    "description": "Буквенный код оценочной валюты.",
+                    "minLength": 3,
+                    "maxLength": 3,
+                    "pattern": "[A-Z]"
+                },
+                "nominal": {
+                    "type": "number",
+                    "description": "Номинал базовой валюты",
+                    "format": "double"
+                },
+                "value": {
+                    "type": "number",
+                    "description": "Курс, за nominal базы дают value target",
+                    "format": "double"
+                }
+            },
+            "required": [
+                "source",
+                "target",
+                "nominal",
+                "value"
+            ]
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "Код ошибки",
+                    "format": "int32"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Тип ошибки. validation - ошибка бизнес логики. exception - техническая ошибка",
+                    "enum": [
+                        "validation",
+                        "exception"
+                    ]
+                },
+                "message": {
+                    "type": "string",
+                    "description": "Текст ошибки",
+                    "minLength": 0
+                },
+                "details": {
+                    "type": "string",
+                    "description": "Детали ошибки. Опционально",
+                    "minLength": 0
+                }
+            },
+            "required": [
+                "code",
+                "type",
+                "message"
+            ]
+        },
+        "Errors": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/definitions/Error"
+            }
+        }
+    }
+}

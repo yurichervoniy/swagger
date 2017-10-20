@@ -1,0 +1,150 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Accounts API. Сервис счетов.",
+        "description": "API для работы со счетами клиента.",
+        "contact": {
+            "name": "BANK RBK API team",
+            "email": "apiteam@bankrbk.kz",
+            "url": "http://www.bankrbk.kz"
+        }
+    },
+    "host": "10.1.1.114",
+    "basePath": "/v1/accounts",
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/assets/{clientNo}": {
+            "get": {
+                "tags": [
+                    "Пассивные счета"
+                ],
+                "summary": "Пассивные счета",
+                "description": "Получение общего баланса по пассивным счетам клиента",
+                "operationId": "getAssetsByClientNo",
+                "parameters": [
+                    {
+                        "name": "clientNo",
+                        "in": "path",
+                        "description": "Идентификатор клиента в OpenWay",
+                        "type": "string",
+                        "required": true,
+                        "minLength": 2
+                    },
+                    {
+                        "name": "currency",
+                        "in": "query",
+                        "description": "Буквенный код валюты",
+                        "required": false,
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 3,
+                        "pattern": "[A-Z]"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Возвращает массив объектов Asset",
+                        "schema": {
+                            "$ref": "#/definitions/Assets"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Asset": {
+            "type": "object",
+            "required": [
+                "currency",
+                "balance"
+            ],
+            "properties": {
+                "currency": {
+                    "type": "string",
+                    "description": "Буквенный код валюты",
+                    "minLength": 3,
+                    "maxLength": 3,
+                    "pattern": "[A-Z]"
+                },
+                "balance": {
+                    "type": "string",
+                    "description": "Баланс",
+                    "format": "money",
+                    "minLength": 1
+                }
+            }
+        },
+        "Assets": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/definitions/Asset"
+            }
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "Код ошибки",
+                    "format": "int32"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Тип ошибки. validation - ошибка бизнес логики. exception - техническая ошибка",
+                    "enum": [
+                        "validation",
+                        "exception"
+                    ]
+                },
+                "message": {
+                    "type": "string",
+                    "description": "Текст ошибки",
+                    "minLength": 0
+                },
+                "details": {
+                    "type": "string",
+                    "description": "Детали ошибки. Опционально",
+                    "minLength": 0
+                }
+            },
+            "required": [
+                "code",
+                "type",
+                "message"
+            ]
+        },
+        "Errors": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/definitions/Error"
+            }
+        }
+    }
+}

@@ -1,0 +1,486 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Statements API. Сервис для получения выписок",
+    "description": "API для получения выписок в синхронном режиме",
+    "contact": {
+      "name": "BANK RBK API team",
+      "email": "apiteam@bankrbk.kz",
+      "url": "http://www.bankrbk.kz"
+    }
+  },
+  "host": "10.1.1.114",
+  "basePath": "/v1/statements",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "oauth": {
+      "type": "oauth2",
+      "flow": "application",
+      "tokenUrl": "https://10.1.1.114/oauth/token",
+      "scopes": {
+        "w4Statements:read": "Чтение данных по карточным выпискам",
+        "ibsoStatements:read": "Чтение данных по карточным выпискам"
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth": [
+        "w4Statements:read",
+        "ibsoStatements:read"
+      ]
+    }
+  ],
+  "paths": {
+    "/w4statement": {
+      "get": {
+        "tags": [
+          "OpenWay выписка"
+        ],
+        "summary": "Получение выписки",
+        "description": "Получение выписки по карточным счетам",
+        "operationId": "getW4Statement()",
+        "produces": [
+          "text/html; charset=utf-8",
+          "application/xml"
+        ],
+        "security": [
+          {
+            "oauth": [
+              "w4Statements:read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "no",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "Номер счета (старые номера и IBAN (KZ[0-9]{5}[A-Za-z0-9]{13}))",
+            "minLength": 14,
+            "maxLength": 20,
+            "pattern": "[A-Za-z0-9]{14,20}"
+          },
+          {
+            "name": "dateFrom",
+            "in": "query",
+            "required": true,
+            "description": "Дата начала",
+            "type": "string",
+            "format": "date"
+          },
+          {
+            "name": "dateTo",
+            "in": "query",
+            "description": "Дата окончания",
+            "type": "string",
+            "format": "date",
+            "required": true
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Формат выписки",
+            "type": "string",
+            "required": true,
+            "enum": [
+              "html",
+              "xml"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает выписку в формате XML или HTML"
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/ibsostatement": {
+      "get": {
+        "tags": [
+          "Выписка из ИБСО"
+        ],
+        "summary": "Получение выписки",
+        "description": "Получение выписки из ИБСО",
+        "operationId": "getIbsoStatement()",
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "oauth": [
+              "ibsoStatements:read"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "no",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "Номер счета (старые номера и IBAN (KZ[0-9]{5}[A-Za-z0-9]{13}))",
+            "minLength": 14,
+            "maxLength": 20,
+            "pattern": "[A-Za-z0-9]{14,20}"
+          },
+          {
+            "name": "dateFrom",
+            "in": "query",
+            "required": true,
+            "description": "Дата начала",
+            "type": "string",
+            "format": "date"
+          },
+          {
+            "name": "dateTo",
+            "in": "query",
+            "description": "Дата окончания",
+            "type": "string",
+            "format": "date",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возвращает выписку в формате XML или HTML",
+            "schema": {
+              "$ref": "#/definitions/IbsoStatement"
+            }
+          },
+          "400": {
+            "description": "Invalid Input",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "IbsoStatement": {
+      "type": "object",
+      "properties": {
+        "saldo": {
+          "$ref": "#/definitions/Saldo"
+        },
+        "turnover": {
+          "$ref": "#/definitions/Turnover"
+        },
+        "transactions": {
+          "$ref": "#/definitions/Transactions"
+        }
+      }
+    },
+    "Transactions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/Transaction"
+      }
+    },
+    "Transaction": {
+      "type": "object",
+      "description": "Объект транзакции",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Идентификатор транзакции",
+          "minLength": 1
+        },
+        "no": {
+          "type": "string",
+          "description": "Номер транзакции",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "string",
+          "description": "Порядок"
+        },
+        "createdDate": {
+          "type": "string",
+          "format": "dateTime",
+          "description": "Дата создания транзакции"
+        },
+        "valueDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Дата валидирования"
+        },
+        "action": {
+          "type": "string",
+          "description": "Операция",
+          "enum": [
+            "credit",
+            "debit"
+          ]
+        },
+        "documentType": {
+          "type": "string",
+          "description": "Тип документа",
+          "minLength": 1
+        },
+        "documentNo": {
+          "type": "string",
+          "description": "Номер документа",
+          "minLength": 1
+        },
+        "purposeCode": {
+          "type": "string",
+          "description": "Код КНП",
+          "minLength": 1
+        },
+        "purposeName": {
+          "type": "string",
+          "description": "Наименование КНП",
+          "minLength": 1
+        },
+        "correspondent": {
+          "$ref": "#/definitions/Correspondent"
+        },
+        "scenario": {
+          "$ref": "#/definitions/Scenario"
+        },
+        "beneficiary": {
+          "$ref": "#/definitions/Beneficiary"
+        },
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "description": "Сумма"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Буквенный код валюты (KZT, USD, EUR и т.д.)",
+          "minLength": 3,
+          "maxLength": 3,
+          "pattern": "[A-Z]{3}"
+        },
+        "rate": {
+          "type": "number",
+          "format": "double"
+        },
+        "amountNat": {
+          "type": "number",
+          "format": "double",
+          "description": "Сумма"
+        }
+      }
+    },
+    "Correspondent": {
+      "type": "object",
+      "properties": {
+        "accountNo": {
+          "type": "string",
+          "description": "Номер счета (старые номера и IBAN (KZ[0-9]{5}[A-Za-z0-9]{13}))",
+          "minLength": 14,
+          "maxLength": 20,
+          "pattern": "[A-Za-z0-9]{14,20}"
+        },
+        "ledger": {
+          "type": "string",
+          "description": "Баланс первого порядка",
+          "minLength": 1
+        },
+        "subledger": {
+          "type": "string",
+          "description": "Баланс второго порядка",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "Наименование",
+          "minLength": 1
+        }
+      }
+    },
+    "Scenario": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Код сценария",
+          "minLength": 1
+        },
+        "module": {
+          "type": "string",
+          "description": "Модуль",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "Наименование сценария",
+          "minLength": 1
+        }
+      }
+    },
+    "Beneficiary": {
+      "type": "object",
+      "properties": {
+        "accountNo": {
+          "type": "string",
+          "description": "Номер счета (старые номера и IBAN (KZ[0-9]{5}[A-Za-z0-9]{13}))",
+          "minLength": 14,
+          "maxLength": 20,
+          "pattern": "[A-Za-z0-9]{14,20}"
+        },
+        "name": {
+          "type": "string",
+          "description": "Наименование бенефициара",
+          "minLength": 1
+        },
+        "taxnumber": {
+          "type": "string",
+          "description": "ИИН/БИН клиента",
+          "minLength": 12,
+          "maxLength": 12
+        },
+        "bankSwiftCode": {
+          "type": "string",
+          "description": "Код БИК",
+          "minLength": 1
+        },
+        "bankSwiftName": {
+          "type": "string",
+          "description": "Наименование",
+          "minLength": 1
+        }
+      }
+    },
+    "Saldo": {
+      "type": "object",
+      "properties": {
+        "inAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Остаток на начало периода"
+        },
+        "outAmount": {
+          "type": "number",
+          "format": "Остаток на конец периода",
+          "description": "Остаток на конец периода"
+        },
+        "startDate": {
+          "type": "string",
+          "description": "Дата начала",
+          "format": "date"
+        },
+        "endDate": {
+          "type": "string",
+          "description": "Дата окончания периода",
+          "format": "date"
+        }
+      }
+    },
+    "Turnover": {
+      "type": "object",
+      "properties": {
+        "debitAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Итого поступления"
+        },
+        "creditAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Итого списания"
+        },
+        "startDate": {
+          "type": "string",
+          "description": "Дата начала",
+          "format": "date"
+        },
+        "endDate": {
+          "type": "string",
+          "description": "Дата окончания периода",
+          "format": "date"
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "description": "Код ошибки",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string",
+          "description": "Тип ошибки. validation - ошибка бизнес логики. exception - техническая ошибка",
+          "enum": [
+            "validation",
+            "exception"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "description": "Текст ошибки",
+          "minLength": 0
+        },
+        "details": {
+          "type": "string",
+          "description": "Детали ошибки. Опционально",
+          "minLength": 0
+        }
+      },
+      "required": [
+        "code",
+        "type",
+        "message"
+      ]
+    },
+    "Errors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/Error"
+      }
+    }
+  }
+}

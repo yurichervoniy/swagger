@@ -1,0 +1,171 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Sector of economy API. Справочник секторов экономики",
+        "description": "API для работы со справочником секторов экономики",
+        "contact": {
+            "name": "BANK RBK API team",
+            "email": "apiteam@bankrbk.kz",
+            "url": "http://www.bankrbk.kz"
+        }
+    },
+    "host": "10.1.1.114",
+    "basePath": "/v1/commons",
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/sectorsofeconomy": {
+            "get": {
+                "tags": [
+                    "Получение справочника секторов экономики"
+                ],
+                "summary": "Получение справочника секторов экономики",
+                "description": "Получение справочника секторов экономики",
+                "operationId": "getSectorsOfEconomy",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Возвращает массив объектов sectorofeconomy",
+                        "schema": {
+                            "$ref": "#/definitions/sectorsofeconomy"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/sectorsofeconomy/{code}": {
+            "get": {
+                "tags": [
+                    "Поиск сектора экономики",
+                    "Поиск по коду"
+                ],
+                "summary": "Получение сектора экономики по идентификатору",
+                "description": "Выполняет сектора экономики по идентификатору",
+                "operationId": "getSectorByCode",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "description": "Идентификатор сектора экономики",
+                        "required": true,
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 3
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Сектор экономики",
+                        "schema": {
+                            "$ref": "#/definitions/sectorofeconomy"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/errors"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/errors"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "sectorofeconomy": {
+            "type": "object",
+            "required": [
+                "code",
+                "display_name"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "код сектора экономики",
+                    "minLength": 3,
+                    "maxLength": 3
+                },
+                "display_name": {
+                    "type": "string",
+                    "description": "Отображаемое имя",
+                    "minLength": 1
+                }
+            }
+        },
+        "sectorsofeconomy": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+                "$ref": "#/definitions/sectorofeconomy"
+            }
+        },
+        "error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "Код ошибки",
+                    "format": "int32"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Тип ошибки. validation - ошибка бизнес логики. exception - техническая ошибка",
+                    "enum": [
+                        "validation",
+                        "exception"
+                    ]
+                },
+                "message": {
+                    "type": "string",
+                    "description": "Текст ошибки",
+                    "minLength": 0
+                },
+                "details": {
+                    "type": "string",
+                    "description": "Детали ошибки. Опционально",
+                    "minLength": 0
+                }
+            },
+            "required": [
+                "code",
+                "type",
+                "message"
+            ]
+        },
+        "errors": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/definitions/error"
+            }
+        }
+    }
+}
